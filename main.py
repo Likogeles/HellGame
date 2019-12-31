@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from scenes import Menu
+from scenes import Menu, Level1
 
 
 def terminate():
@@ -11,7 +11,6 @@ def terminate():
 
 pygame.init()
 screen = pygame.display.set_mode((972, 600))
-screen.fill((0, 0, 0))
 
 
 scenename = "menu"
@@ -23,6 +22,10 @@ while True:
         terminate()
     elif scenename == "menu":
         Scene = Menu()
+    elif scenename == "newgame":
+        # Сброс базы данных
+        Scene = Level1()
+        scenename = "level_1"
     # Сюда нужно подставлять остальные сцены по мере их готовности
 
     for event in pygame.event.get():
@@ -32,9 +35,12 @@ while True:
         if scenename == "menu":
             if event.type == pygame.MOUSEBUTTONDOWN:
                 scenename = Scene.click(event.pos)
+        elif scenename == "level_1":
+            print("level_1")
+            # Scene.update(event)
         else:
-            print(scenename)
-            scenename = "menu"
+            print("Нет сцены " + scenename)
+            terminate()
 
     Scene.render(screen)
     pygame.display.flip()

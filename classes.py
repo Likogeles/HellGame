@@ -18,3 +18,15 @@ class Button(pygame.sprite.Sprite):
                 self.rect.y <= pos[1] <= self.rect.y + self.h:
             return True
         return False
+
+
+class Hero(pygame.sprite.Sprite):
+    def __init__(self, x, y, *group):
+        super().__init__(*group)
+        self.image = load_image(self, "hero.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+    def gravity(self):
+        pass
