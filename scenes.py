@@ -22,7 +22,7 @@ class Menu:
             if i.click(pos):
                 while i.rect.x < 970:
                     for j in self.but_sprites:
-                        j.rect[0] += 50
+                        j.rect.x += 50
                         scr.fill((0, 0, 0))
                         self.but_sprites.draw(scr)
                         pygame.display.flip()
