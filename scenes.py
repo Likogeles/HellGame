@@ -22,10 +22,11 @@ class Menu:
         return "menu"
 
 
-class Level1:
-    def __init__(self):
+class Level:
+    def __init__(self, level_text):
         self.hero_sprites = pygame.sprite.Group()
         self.floor_sprites = pygame.sprite.Group()
+        self.enemy_sprites = pygame.sprite.Group()
         self.hero = Hero(100, 100, self.hero_sprites)
         Floor(100, 200, "floor.png", self.floor_sprites)
         Floor(50, 200, "floor.png", self.floor_sprites)
@@ -38,12 +39,17 @@ class Level1:
         self.floor_sprites.draw(screen)
         self.hero_sprites.draw(screen)
 
+    def gravity(self):
+        self.hero.gravity(self.floor_sprites)
+
+
+class Level1(Level):
+    def __init__(self, level_text):
+        super().__init__(level_text)
+
     def update(self, event):
         if event.type == pygame.KEYDOWN:
             self.hero.beginmove(event, self.floor_sprites)
         elif event.type == pygame.KEYUP:
             self.hero.stopmove(event)
         self.hero.move(self.floor_sprites)
-
-    def gravity(self):
-        self.hero.gravity(self.floor_sprites)

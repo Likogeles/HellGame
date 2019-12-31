@@ -26,7 +26,7 @@ while True:
         Scene = Menu()
     elif scenename == "newgame" or scenename == "level_1":
         # Сброс базы данных
-        Scene = Level1()
+        Scene = Level1("level_1.txt")
         scenename = "level1"
     # Сюда нужно подставлять остальные сцены по мере их готовности
 

@@ -50,6 +50,7 @@ class Person(pygame.sprite.Sprite):
             self.gravity_acceleration += 0.1
             if self.gravity_acceleration > 50:
                 self.gravity_acceleration = 50
+
         if self.rect.y > 600:
             self.rect.y = -100
 
@@ -61,14 +62,22 @@ class Hero(Person):
         self.left_move = False
 
     def move(self, floor_sprites):
+        v = 3
+        self.rect.y += 1
+        if pygame.sprite.spritecollideany(self, floor_sprites):
+            v = 5
+        self.rect.y -= 1
+
         if self.right_move:
-            self.rect.x += 3
-            if not pygame.sprite.spritecollideany(self, floor_sprites):
-                self.gravity_log = True
+            self.rect.x += v
+            if pygame.sprite.spritecollideany(self, floor_sprites):
+                self.rect.x -= v
+            self.gravity_log = True
         elif self.left_move:
-            self.rect.x -= 3
-            if not pygame.sprite.spritecollideany(self, floor_sprites):
-                self.gravity_log = True
+            self.rect.x -= v
+            if pygame.sprite.spritecollideany(self, floor_sprites):
+                self.rect.x += v
+            self.gravity_log = True
 
     def beginmove(self, event, floor_sprites):
         if event.key == pygame.K_d:
