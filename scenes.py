@@ -1,6 +1,6 @@
 import pygame
 
-from classes import Button, Hero
+from classes import Button, Floor, Hero
 
 
 class Menu:
@@ -24,14 +24,26 @@ class Menu:
 
 class Level1:
     def __init__(self):
-        self.all_sprites = pygame.sprite.Group()
         self.hero_sprites = pygame.sprite.Group()
+        self.floor_sprites = pygame.sprite.Group()
         self.hero = Hero(100, 100, self.hero_sprites)
+        Floor(100, 200, "floor.png", self.floor_sprites)
+        Floor(50, 200, "floor.png", self.floor_sprites)
+        Floor(150, 200, "floor.png", self.floor_sprites)
+        Floor(150, 150, "floor.png", self.floor_sprites)
+        Floor(50, 150, "floor.png", self.floor_sprites)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
-        self.all_sprites.draw(screen)
+        self.floor_sprites.draw(screen)
         self.hero_sprites.draw(screen)
 
     def update(self, event):
-        pass
+        if event.type == pygame.KEYDOWN:
+            self.hero.beginmove(event, self.floor_sprites)
+        elif event.type == pygame.KEYUP:
+            self.hero.stopmove(event)
+        self.hero.move(self.floor_sprites)
+
+    def gravity(self):
+        self.hero.gravity(self.floor_sprites)
