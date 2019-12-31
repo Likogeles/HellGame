@@ -14,7 +14,7 @@ pygame.display.set_caption("Hell Game")
 screen = pygame.display.set_mode((972, 600))
 
 
-scenename = "level_1"
+scenename = "menu"
 Scene = Menu()
 
 MYEVENTTYPE = 30
@@ -33,7 +33,7 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             terminate()
-        if "level" in scenename and event.type == MYEVENTTYPE:
+        if "level" in scenename[:5] and event.type == MYEVENTTYPE:
             Scene.gravity()
 
         if scenename == "menu":

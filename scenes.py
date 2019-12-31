@@ -8,7 +8,7 @@ class Menu:
         self.but_sprites = pygame.sprite.Group()
         Button("continue", "continuebut.png", 336, 300, self.but_sprites)
         Button("newgame", "newgamebut.png", 336, 360, self.but_sprites)
-        Button("levels", "levelsbut.png", 336, 420, self.but_sprites)
+        Button("listlevels", "levelsbut.png", 336, 420, self.but_sprites)
         Button("quit", "quitbut.png", 336, 480, self.but_sprites)
 
     def render(self, screen, *args):
