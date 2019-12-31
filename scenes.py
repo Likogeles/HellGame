@@ -1,4 +1,6 @@
 import pygame
+import time
+
 
 from classes import Button, Floor, Hero
 
@@ -11,13 +13,20 @@ class Menu:
         Button("listlevels", "levelsbut.png", 336, 420, self.but_sprites)
         Button("quit", "quitbut.png", 336, 480, self.but_sprites)
 
-    def render(self, screen, *args):
+    def render(self, screen):
         screen.fill((0, 0, 0))
         self.but_sprites.draw(screen)
 
-    def click(self, pos):
+    def click(self, pos, scr):
         for i in self.but_sprites:
             if i.click(pos):
+                while i.rect.x < 970:
+                    for j in self.but_sprites:
+                        j.rect[0] += 50
+                        scr.fill((0, 0, 0))
+                        self.but_sprites.draw(scr)
+                        pygame.display.flip()
+                        time.sleep(0.001)
                 return i.name
         return "menu"
 

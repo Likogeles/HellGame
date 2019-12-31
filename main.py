@@ -26,7 +26,7 @@ while True:
         Scene = Menu()
     elif scenename == "newgame" or scenename == "level_1":
         # Сброс базы данных
-        Scene = Level1("level_1.txt")
+        Scene = Level1("Level_1.txt")
         scenename = "level1"
     # Сюда нужно подставлять остальные сцены по мере их готовности
 
@@ -38,7 +38,7 @@ while True:
 
         if scenename == "menu":
             if event.type == pygame.MOUSEBUTTONDOWN:
-                scenename = Scene.click(event.pos)
+                scenename = Scene.click(event.pos, screen)
         elif scenename == "level1":
             Scene.update(event)
         else:
