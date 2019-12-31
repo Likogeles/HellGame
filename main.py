@@ -23,7 +23,7 @@ while True:
         terminate()
     elif scenename == "menu":
         Scene = Menu()
-    # Сюда подставлять остальные сцены по мере их готовности
+    # Сюда нужно подставлять остальные сцены по мере их готовности
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
