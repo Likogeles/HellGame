@@ -60,21 +60,23 @@ class Hero(Person):
         self.image_0 = load_image("Hero/hero_0.png", -1)
 
         self.t = 0
-        self.heropunches = []
+        self.standing = []
         for i in range(8):
-            self.heropunches.append(load_image("Hero/heropunch_" + str(i) + ".png", -1))
+            self.standing.append(pygame.transform.scale(load_image("Hero/standing_" + str(i) + ".png", -1), (45, 90)))
 
         self.right_move = False
         self.left_move = False
 
     def animate(self):
         if self.right_move:
-            self.image = self.heropunches[self.t]
+            pass
+        elif self.left_move:
+            pass
+        else:
+            self.image = self.standing[self.t]
             self.t += 1
             if self.t > 7:
                 self.t = 0
-        else:
-            self.image = self.image_0
 
     def move(self, floor_sprites):
         if self.right_move:
