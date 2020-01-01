@@ -60,24 +60,50 @@ class Hero(Person):
         super().__init__(x, y, "Hero/hero_0.png", *group)
         self.image_0 = load_image("Hero/hero_0.png", -1)
 
+        self.oldrunningwasright = True
         self.t = 0
-        self.standing = []
+        self.standing_right = []
         for i in range(8):
-            self.standing.append(pygame.transform.scale(load_image("Hero/standing_" + str(i) + ".png", -1), (45, 90)))
+            self.standing_right.append(pygame.transform.scale(load_image("Hero/standing_" + str(i) + ".png", -1), (45, 90)))
+        self.standing_left = []
+        for i in range(8):
+            x = pygame.transform.scale(load_image("Hero/standing_" + str(i) + ".png", -1), (45, 90))
+            self.standing_left.append(pygame.transform.flip(x, True, False))
+        self.running_right = []
+        for i in range(8):
+            self.running_right.append(pygame.transform.scale(load_image("Hero/running_" + str(i) + ".png", -1), (45, 90)))
+        self.running_left = []
+        for i in range(8):
+            x = pygame.transform.scale(load_image("Hero/running_" + str(i) + ".png", -1), (45, 90))
+            self.running_left.append(pygame.transform.flip(x, True, False))
 
         self.right_move = False
         self.left_move = False
 
     def animate(self):
         if self.right_move:
-            pass
-        elif self.left_move:
-            pass
-        else:
-            self.image = self.standing[self.t]
+            self.image = self.running_right[self.t]
             self.t += 1
             if self.t > 7:
                 self.t = 0
+            self.oldrunningwasright = True
+        elif self.left_move:
+            self.image = self.running_left[self.t]
+            self.t += 1
+            if self.t > 7:
+                self.t = 0
+            self.oldrunningwasright = False
+        else:
+            if self.oldrunningwasright:
+                self.image = self.standing_right[self.t]
+                self.t += 1
+                if self.t > 7:
+                    self.t = 0
+            else:
+                self.image = self.standing_left[self.t]
+                self.t += 1
+                if self.t > 7:
+                    self.t = 0
 
     def move(self, floor_sprites):
         if self.right_move:
