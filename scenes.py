@@ -36,12 +36,19 @@ class Level:
         self.hero_sprites = pygame.sprite.Group()
         self.floor_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
-        self.hero = Hero(100, 100, self.hero_sprites)
-        Floor(100, 200, "floor.png", self.floor_sprites)
-        Floor(50, 200, "floor.png", self.floor_sprites)
-        Floor(150, 200, "floor.png", self.floor_sprites)
-        Floor(150, 150, "floor.png", self.floor_sprites)
-        Floor(50, 150, "floor.png", self.floor_sprites)
+
+        filename = "data/LevelsLists/" + level_text
+        with open(filename, 'r') as mapFile:
+            level_map = [line.strip() for line in mapFile]
+        max_width = max(map(len, level_map))
+        level = list(map(lambda x: x.ljust(max_width, '.'), level_map))
+
+        for i in range(len(level)):
+            for j in range(len(level[0])):
+                if level[i][j] == "#":
+                    Floor(50 * j, 50 * i, "floor.png", self.floor_sprites)
+                elif level[i][j] == "@":
+                    self.hero = Hero(50 * j, 50 * i - 40, self.hero_sprites)
 
     def render(self, screen):
         screen.fill((0, 0, 0))

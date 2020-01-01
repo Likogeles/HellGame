@@ -49,7 +49,8 @@ class Person(pygame.sprite.Sprite):
             self.gravity_acceleration += 0.1
             if self.gravity_acceleration > 50:
                 self.gravity_acceleration = 50
-
+        else:
+            self.gravity_acceleration += 0.1
         if self.rect.y > 600:
             self.rect.y = -100
 
