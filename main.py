@@ -17,8 +17,11 @@ screen = pygame.display.set_mode((972, 600))
 scenename = "menu"
 Scene = Menu()
 
-MYEVENTTYPE = 30
-pygame.time.set_timer(MYEVENTTYPE, 10)
+GRAVITYEVENT = 30
+pygame.time.set_timer(GRAVITYEVENT, 10)
+ANIMATEEVENT = 31
+pygame.time.set_timer(ANIMATEEVENT, 100)
+
 while True:
     if scenename == "quit":
         terminate()
@@ -33,8 +36,11 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             terminate()
-        if "level" in scenename[:5] and event.type == MYEVENTTYPE:
-            Scene.gravity()
+        if "level" in scenename[:5]:
+            if event.type == GRAVITYEVENT:
+                Scene.gravity()
+            elif event.type == ANIMATEEVENT:
+                Scene.animateupdate()
 
         if scenename == "menu":
             if event.type == pygame.MOUSEBUTTONDOWN:

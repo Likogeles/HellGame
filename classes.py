@@ -6,7 +6,7 @@ from functions import load_image
 class Button(pygame.sprite.Sprite):
     def __init__(self, name, imagename, x, y, *group):
         super().__init__(*group)
-        self.image = load_image(imagename)
+        self.image = load_image("Buttons/" + imagename)
         self.rect = self.image.get_rect()
         self.w, self.h = self.image.get_rect()[2], self.image.get_rect()[3]
         self.rect.x = x
@@ -23,7 +23,7 @@ class Button(pygame.sprite.Sprite):
 class Floor(pygame.sprite.Sprite):
     def __init__(self, x, y, imgname, *group):
         super().__init__(*group)
-        self.image = load_image(imgname, -1)
+        self.image = load_image("Floor/" + imgname, -1)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -56,12 +56,27 @@ class Person(pygame.sprite.Sprite):
 
 class Hero(Person):
     def __init__(self, x, y, *group):
-        super().__init__(x, y, "hero.png", *group)
+        super().__init__(x, y, "Hero/hero_0.png", *group)
+        self.image_0 = load_image("Hero/hero_0.png", -1)
+
+        self.t = 0
+        self.heropunches = []
+        for i in range(8):
+            self.heropunches.append(load_image("Hero/heropunch_" + str(i) + ".png", -1))
+
         self.right_move = False
         self.left_move = False
 
-    def move(self, floor_sprites):
+    def animate(self):
+        if self.right_move:
+            self.image = self.heropunches[self.t]
+            self.t += 1
+            if self.t > 7:
+                self.t = 0
+        else:
+            self.image = self.image_0
 
+    def move(self, floor_sprites):
         if self.right_move:
             self.rect.x += 3
             if pygame.sprite.spritecollideany(self, floor_sprites):

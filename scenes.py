@@ -51,6 +51,9 @@ class Level:
     def gravity(self):
         self.hero.gravity(self.floor_sprites)
 
+    def animateupdate(self):
+        self.hero.animate()
+
 
 class Level1(Level):
     def __init__(self, level_text):
