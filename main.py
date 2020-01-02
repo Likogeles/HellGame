@@ -20,7 +20,7 @@ Scene = Menu()
 GRAVITYEVENT = 30
 pygame.time.set_timer(GRAVITYEVENT, 10)
 ANIMATEEVENT = 31
-pygame.time.set_timer(ANIMATEEVENT, 100)
+pygame.time.set_timer(ANIMATEEVENT, 80)
 
 while True:
     if scenename == "quit":
@@ -46,7 +46,7 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 scenename = Scene.click(event.pos, screen)
         elif scenename == "level1":
-            Scene.update(event)
+            Scene.eventupdate(event)
         else:
             print("Нет сцены " + scenename)
             terminate()

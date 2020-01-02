@@ -12,6 +12,8 @@ class Menu:
         Button("newgame", "newgamebut.png", 336, 360, self.but_sprites)
         Button("listlevels", "levelsbut.png", 336, 420, self.but_sprites)
         Button("quit", "quitbut.png", 336, 480, self.but_sprites)
+        # Временно обозначено управление
+        Button("", "upravlenie.png", 50, 50, self.but_sprites)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
@@ -36,6 +38,8 @@ class Level:
         self.hero_sprites = pygame.sprite.Group()
         self.floor_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
+        self.bullet_sprites = pygame.sprite.Group()
+        self.all_sprites = pygame.sprite.Group()
 
         filename = "data/LevelsLists/" + level_text
         with open(filename, 'r') as mapFile:
@@ -46,7 +50,7 @@ class Level:
         for i in range(len(level)):
             for j in range(len(level[0])):
                 if level[i][j] == "#":
-                    Floor(50 * j, 50 * i, "floor.png", self.floor_sprites)
+                    self.all_sprites.add(Floor(50 * j, 50 * i, "floor.png", self.floor_sprites))
                 elif level[i][j] == "@":
                     self.hero = Hero(50 * j, 50 * i - 40, self.hero_sprites)
 
@@ -54,9 +58,12 @@ class Level:
         screen.fill((0, 0, 0))
         self.floor_sprites.draw(screen)
         self.hero_sprites.draw(screen)
+        self.bullet_sprites.draw(screen)
 
     def gravity(self):
         self.hero.gravity(self.floor_sprites)
+        for i in self.bullet_sprites:
+            i.fly(self.all_sprites)
 
     def animateupdate(self):
         self.hero.animate()
@@ -66,9 +73,7 @@ class Level1(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
 
-    def update(self, event):
-        if event.type == pygame.KEYDOWN:
-            self.hero.beginmove(event, self.floor_sprites)
-        elif event.type == pygame.KEYUP:
-            self.hero.stopmove(event)
-        self.hero.move(self.floor_sprites)
+    def eventupdate(self, event):
+        new_sprite = self.hero.eventin(event, self.floor_sprites)
+        if new_sprite:
+            self.bullet_sprites.add(new_sprite)
