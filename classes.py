@@ -126,19 +126,40 @@ class Hero(Person):
                 if self.t > 7:
                     self.t = 0
 
-    def move(self, floor_sprites):
+    def move(self, floor_sprites, all_sprites):
+        sp = 0
         if self.right_move:
             self.rect.x += 2
-            if pygame.sprite.spritecollideany(self, floor_sprites):
-                self.rect.x -= 2
+            if not(pygame.sprite.spritecollideany(self, floor_sprites)):
+                sp = -2
+            self.rect.x -= 2
+
             self.gravity_log = True
         elif self.left_move:
             self.rect.x -= 2
-            if pygame.sprite.spritecollideany(self, floor_sprites):
-                self.rect.x += 2
+            if not(pygame.sprite.spritecollideany(self, floor_sprites)):
+                sp = 2
+            self.rect.x += 2
             self.gravity_log = True
 
-    def eventin(self, event, floor_sprites):
+        if sp != 0:
+            if self.rect.x != 486:
+                self.rect.x -= sp
+            else:
+                minx = 0
+                maxx = 0
+                for i in all_sprites:
+                    if i.rect.x <= minx:
+                        minx = i.rect.x
+                    if i.rect.x >= maxx:
+                        maxx = i.rect.x
+                if minx + sp > 0 or maxx + sp < 922:
+                    self.rect.x -= sp
+                else:
+                    for i in all_sprites:
+                        i.rect.x += sp
+
+    def eventin(self, event, floor_sprites, all_sprites):
         new_bullet = None
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_SPACE:
@@ -155,7 +176,7 @@ class Hero(Person):
             if event.key == pygame.K_d or event.key == pygame.K_a:
                 self.stopmove(event)
 
-        self.move(floor_sprites)
+        self.move(floor_sprites, all_sprites)
         if new_bullet:
             return new_bullet
         return None
