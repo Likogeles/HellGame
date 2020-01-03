@@ -198,7 +198,8 @@ class Enemy(Person):
                     self.bullet_spawn += 1
             else:
                 self.bullet_spawn = 1000
-                if check_block(self.rect.x + 45, self.rect.y + 70, floor_sprites):
+                if check_block(self.rect.x + 45, self.rect.y + 70, floor_sprites) and\
+                        not(check_block(self.rect.x + 45, self.rect.y + 20, floor_sprites)):
                     self.rect.x += 1
                 else:
                     self.oldrunningwasright = False
@@ -211,7 +212,8 @@ class Enemy(Person):
                     self.bullet_spawn += 1
             else:
                 self.bullet_spawn = 1000
-                if check_block(self.rect.x - 10, self.rect.y + 70, floor_sprites):
+                if check_block(self.rect.x - 10, self.rect.y + 70, floor_sprites) and\
+                        not (check_block(self.rect.x - 10, self.rect.y + 20, floor_sprites)):
                     self.rect.x -= 1
                 else:
                     self.oldrunningwasright = True
