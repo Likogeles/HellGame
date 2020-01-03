@@ -3,6 +3,15 @@ import pygame
 from functions import load_image, check_block, check_hero
 
 
+class HealthPoint(pygame.sprite.Sprite):
+    def __init__(self, x, y, *group):
+        super().__init__(*group)
+        self.image = load_image("Hero/healthpoint.png", -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+
 class Button(pygame.sprite.Sprite):
     def __init__(self, name, imagename, x, y, *group):
         super().__init__(*group)
@@ -30,15 +39,15 @@ class Floor(pygame.sprite.Sprite):
 
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, move_on_right, imgname, *group):
+    def __init__(self, x, y, move_on_right, speed, imgname, *group):
         super().__init__(*group)
         self.image = load_image("Bullets/" + imgname, -1)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.move = -10
+        self.move = -speed
         if move_on_right:
-            self.move = 10
+            self.move = speed
 
     def fly(self, all_sprites):
         self.rect.x += self.move
@@ -47,7 +56,9 @@ class Bullet(pygame.sprite.Sprite):
         x = pygame.sprite.spritecollideany(self, all_sprites)
         if x:
             if type(x) == Enemy:
-                x.kill()
+                x.get_hit()
+            elif type(x) == Hero:
+                x.get_hit()
             self.kill()
 
 
@@ -61,6 +72,7 @@ class Person(pygame.sprite.Sprite):
         self.gravity_acceleration = 0
         self.gravity_log = True
         self.oldrunningwasright = True
+        self.hp = 100
 
     def gravity(self, floor_sprites):
         self.rect.y += 1 + int(self.gravity_acceleration)
@@ -76,6 +88,11 @@ class Person(pygame.sprite.Sprite):
             self.gravity_acceleration += 0.1
         if self.rect.y > 600:
             self.rect.y = -100
+
+    def get_hit(self):
+        self.hp -= 20
+        if self.hp <= 0:
+            self.kill()
 
 
 class Hero(Person):
@@ -152,36 +169,41 @@ class Hero(Person):
                 for i in all_sprites:
                     if i.rect.x <= minx:
                         minx = i.rect.x
-                    if i.rect.x >= maxx:
+                    if i.rect.x > maxx:
                         maxx = i.rect.x
                 if minx + sp > 0 or maxx + sp < 922:
                     if 0 <= self.rect.x - sp <= 922:
                         self.rect.x -= sp
                 else:
                     for i in all_sprites:
-                        i.rect.x += sp
+                        i.rect.x += sp * 2
+
+    def get_hit(self):
+        super().get_hit()
+        print(self.hp)
 
     def eventin(self, event, floor_sprites, all_sprites):
-        new_bullet = None
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_SPACE:
-                self.beginmove(event, floor_sprites)
-            elif event.key == pygame.K_j:
-                x = self.rect.x
-                y = self.rect.y + 10
-                if self.oldrunningwasright:
-                    x += 50
-                else:
-                    x -= 25
-                new_bullet = Bullet(x, y, self.oldrunningwasright, "bull_0.png")
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_d or event.key == pygame.K_a:
-                self.stopmove(event)
+        if self.hp > 0:
+            new_bullet = None
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_SPACE:
+                    self.beginmove(event, floor_sprites)
+                elif event.key == pygame.K_j:
+                    x = self.rect.x
+                    y = self.rect.y + 10
+                    if self.oldrunningwasright:
+                        x += 50
+                    else:
+                        x -= 25
+                    new_bullet = Bullet(x, y, self.oldrunningwasright, 10, "bull_0.png")
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_d or event.key == pygame.K_a:
+                    self.stopmove(event)
 
-        self.move(floor_sprites, all_sprites)
-        if new_bullet:
-            return new_bullet
-        return None
+            self.move(floor_sprites, all_sprites)
+            if new_bullet:
+                return new_bullet
+            return None
 
     def beginmove(self, event, floor_sprites):
         if event.key == pygame.K_d:
@@ -216,7 +238,7 @@ class Enemy(Person):
             if check_hero(self.rect.x - 25, self.rect.y + 10, True, hero_sprites):
                 if self.bullet_spawn > 50:
                     self.bullet_spawn = 0
-                    return Bullet(self.rect.x + 50, self.rect.y + 10, True, "bull_0.png")
+                    return Bullet(self.rect.x + 50, self.rect.y + 10, True, 5, "bull_0.png")
                 else:
                     self.bullet_spawn += 1
             else:
@@ -230,7 +252,7 @@ class Enemy(Person):
             if check_hero(self.rect.x - 25, self.rect.y + 10, False, hero_sprites):
                 if self.bullet_spawn > 50:
                     self.bullet_spawn = 0
-                    return Bullet(self.rect.x - 25, self.rect.y + 10, False, "bull_0.png")
+                    return Bullet(self.rect.x - 25, self.rect.y + 10, False, 5, "bull_0.png")
                 else:
                     self.bullet_spawn += 1
             else:

@@ -2,7 +2,7 @@ import pygame
 import time
 
 
-from classes import Button, Floor, Hero, Enemy
+from classes import HealthPoint, Button, Floor, Hero, Enemy
 
 
 class Menu:
@@ -39,6 +39,7 @@ class Level:
         self.floor_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
         self.bullet_sprites = pygame.sprite.Group()
+        self.hp_sprites = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
 
         filename = "data/LevelsLists/" + level_text
@@ -53,13 +54,14 @@ class Level:
                     self.all_sprites.add(Floor(50 * j, 50 * i, "floor.png", self.floor_sprites))
                 elif level[i][j] == "@":
                     self.hero = Hero(50 * j, 50 * i - 40, self.hero_sprites)
+                    self.all_sprites.add(self.hero)
                 elif level[i][j] == "#":
                     self.all_sprites.add(Enemy(50 * j, 50 * i - 20, self.enemy_sprites))
 
     def render(self, screen):
         screen.fill((0, 0, 0))
         self.all_sprites.draw(screen)
-        self.hero_sprites.draw(screen)
+        self.hp_sprites.draw(screen)
         self.bullet_sprites.draw(screen)
 
     def gravity(self):
@@ -68,6 +70,16 @@ class Level:
             i.gravity(self.floor_sprites)
         for i in self.bullet_sprites:
             i.fly(self.all_sprites)
+
+        for i in range(self.hero.hp):
+            if i % 20 == 0:
+                HealthPoint(i * 30 + 10, 10, self.hp_sprites)
+
+        for i in self.hp_sprites:
+            i.kill()
+        for i in range(self.hero.hp):
+            if i % 20 == 0:
+                HealthPoint((i // 20) * 30 + 10, 10, self.hp_sprites)
 
     def movingupdate(self):
         for i in self.enemy_sprites:
