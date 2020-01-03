@@ -2,7 +2,7 @@ import pygame
 import time
 
 
-from classes import Button, Floor, Hero
+from classes import Button, Floor, Hero, Enemy
 
 
 class Menu:
@@ -49,21 +49,31 @@ class Level:
 
         for i in range(len(level)):
             for j in range(len(level[0])):
-                if level[i][j] == "#":
+                if level[i][j] == "=":
                     self.all_sprites.add(Floor(50 * j, 50 * i, "floor.png", self.floor_sprites))
                 elif level[i][j] == "@":
                     self.hero = Hero(50 * j, 50 * i - 40, self.hero_sprites)
+                    self.all_sprites.add(self.hero)
+                elif level[i][j] == "#":
+                    self.all_sprites.add(Enemy(50 * j, 50 * i - 20, self.enemy_sprites))
 
     def render(self, screen):
         screen.fill((0, 0, 0))
-        self.floor_sprites.draw(screen)
-        self.hero_sprites.draw(screen)
+        self.all_sprites.draw(screen)
         self.bullet_sprites.draw(screen)
 
     def gravity(self):
         self.hero.gravity(self.floor_sprites)
+        for i in self.enemy_sprites:
+            i.gravity(self.floor_sprites)
         for i in self.bullet_sprites:
             i.fly(self.all_sprites)
+
+    def movingupdate(self):
+        for i in self.enemy_sprites:
+            new_bullet = i.moving(self.floor_sprites, self.hero_sprites)
+            if new_bullet:
+                self.bullet_sprites.add(new_bullet)
 
     def animateupdate(self):
         self.hero.animate()
@@ -74,6 +84,6 @@ class Level1(Level):
         super().__init__(level_text)
 
     def eventupdate(self, event):
-        new_sprite = self.hero.eventin(event, self.floor_sprites)
-        if new_sprite:
-            self.bullet_sprites.add(new_sprite)
+        new_bullet = self.hero.eventin(event, self.floor_sprites)
+        if new_bullet:
+            self.bullet_sprites.add(new_bullet)
