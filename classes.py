@@ -144,7 +144,8 @@ class Hero(Person):
 
         if sp != 0:
             if self.rect.x != 486:
-                self.rect.x -= sp
+                if 0 <= self.rect.x - sp <= 922:
+                    self.rect.x -= sp
             else:
                 minx = 0
                 maxx = 0
@@ -154,7 +155,8 @@ class Hero(Person):
                     if i.rect.x >= maxx:
                         maxx = i.rect.x
                 if minx + sp > 0 or maxx + sp < 922:
-                    self.rect.x -= sp
+                    if 0 <= self.rect.x - sp <= 922:
+                        self.rect.x -= sp
                 else:
                     for i in all_sprites:
                         i.rect.x += sp
