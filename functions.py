@@ -25,12 +25,19 @@ def check_block(x, y, all_sprites):
     return False
 
 
-def check_hero(x, y, hero_sprites):
+def check_hero(x, y, move_right, hero_sprites):
     sprite = pygame.sprite.Sprite()
     sprite.image = load_image("Enemys/check_hero.png")
     sprite.rect = sprite.image.get_rect()
     sprite.rect.x = x
     sprite.rect.y = y
-    if pygame.sprite.spritecollideany(sprite, hero_sprites):
-        return True
+    sp = -10
+    if move_right:
+        sp = 10
+    while -100 <= sprite.rect.x <= 1000:
+        sprite.rect.x += sp
+        if pygame.sprite.spritecollideany(sprite, hero_sprites):
+            sprite.kill()
+            return True
+    sprite.kill()
     return False

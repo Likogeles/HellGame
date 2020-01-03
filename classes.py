@@ -190,7 +190,7 @@ class Enemy(Person):
 
     def moving(self, floor_sprites, hero_sprites):
         if self.oldrunningwasright:
-            if check_hero(self.rect.x + 45, self.rect.y, hero_sprites):
+            if check_hero(self.rect.x - 25, self.rect.y + 10, True, hero_sprites):
                 if self.bullet_spawn > 50:
                     self.bullet_spawn = 0
                     return Bullet(self.rect.x + 50, self.rect.y + 10, True, "bull_0.png")
@@ -203,7 +203,7 @@ class Enemy(Person):
                 else:
                     self.oldrunningwasright = False
         else:
-            if check_hero(self.rect.x - 972, self.rect.y, hero_sprites):
+            if check_hero(self.rect.x - 25, self.rect.y + 10, False, hero_sprites):
                 if self.bullet_spawn > 50:
                     self.bullet_spawn = 0
                     return Bullet(self.rect.x - 25, self.rect.y + 10, False, "bull_0.png")
