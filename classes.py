@@ -38,6 +38,16 @@ class Floor(pygame.sprite.Sprite):
         self.rect.y = y
 
 
+class Endlevel(pygame.sprite.Sprite):
+    def __init__(self, x, y, name_of_next_level, imgname, *group):
+        super().__init__(*group)
+        self.image = load_image("Endsoflevels/" + imgname, -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.nextlevel = name_of_next_level
+
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, move_on_right, speed, imgname, *group):
         super().__init__(*group)
@@ -57,7 +67,9 @@ class Bullet(pygame.sprite.Sprite):
         if x:
             if type(x) == Enemy:
                 x.get_hit()
-            self.kill()
+                self.kill()
+            elif type(x) == Floor:
+                self.kill()
         x = pygame.sprite.spritecollideany(self, hero_sprites)
         if x:
             if type(x) == Hero:
@@ -205,6 +217,10 @@ class Hero(Person):
             self.move(floor_sprites, all_sprites)
             if new_bullet:
                 return new_bullet
+
+            x = pygame.sprite.spritecollideany(self, all_sprites)
+            if type(x) == Endlevel:
+                return x.nextlevel
             return None
 
     def beginmove(self, event, floor_sprites):

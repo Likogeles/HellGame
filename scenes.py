@@ -2,7 +2,7 @@ import pygame
 import time
 
 
-from classes import HealthPoint, Button, Floor, Hero, Enemy
+from classes import HealthPoint, Button, Floor, Endlevel, Bullet, Hero, Enemy
 
 
 class Menu:
@@ -58,6 +58,8 @@ class Level:
                     self.hero = Hero(50 * j, 50 * i - 40, self.hero_sprites)
                 elif level[i][j] == "#":
                     self.all_sprites.add(Enemy(50 * j, 50 * i - 20, self.enemy_sprites))
+                elif level[i][j] == "+":
+                    Endlevel(50 * j, 50 * i - 50, "menu", "level1.png", self.all_sprites)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
@@ -84,7 +86,7 @@ class Level:
                 i.kill()
             for i in range(self.hero.hp):
                 if i % 20 == 0:
-                    HealthPoint((i // 20) * 30 + 10, 10, self.hp_sprites)
+                    HealthPoint((i // 20) * 40 + 10, 10, self.hp_sprites)
 
     def movingupdate(self):
         if not self.pause:
@@ -124,6 +126,9 @@ class Level1(Level):
                 else:
                     return x
         else:
-            new_bullet = self.hero.eventin(event, self.floor_sprites, self.all_sprites)
-            if new_bullet:
-                self.bullet_sprites.add(new_bullet)
+            x = self.hero.eventin(event, self.floor_sprites, self.all_sprites)
+            if x:
+                if type(x) == Bullet:
+                    self.bullet_sprites.add(x)
+                elif x == "menu":
+                    return x
