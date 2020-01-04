@@ -1,8 +1,9 @@
 import pygame
 import sys
+import time
 
 from scenes import Menu, Level1
-
+from functions import load_image
 
 def terminate():
     pygame.quit()
@@ -15,6 +16,17 @@ screen = pygame.display.set_mode((972, 600))
 
 
 scenename = "menu"
+oldscenname = scenename
+
+download_image = pygame.sprite.Sprite()
+download_image.image = load_image("download.png")
+download_image.rect = download_image.image.get_rect()
+download_image.rect.x = 0
+download_image.rect.y = 0
+
+downloadSprites = pygame.sprite.Group()
+downloadSprites.add(download_image)
+
 Scene = Menu()
 
 GRAVITYEVENT = 30
@@ -25,6 +37,10 @@ MOVINGEVENT = 29
 pygame.time.set_timer(MOVINGEVENT, 20)
 
 while True:
+    if scenename != oldscenname:
+        downloadSprites.draw(screen)
+        oldscenname = scenename
+        pygame.display.flip()
     if scenename == "quit":
         terminate()
     elif scenename == "menu":
@@ -50,7 +66,9 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 scenename = Scene.click(event.pos, screen)
         elif scenename == "level1":
-            Scene.eventupdate(event)
+            x = Scene.eventupdate(event, screen)
+            if x:
+                scenename = x
         else:
             print("Нет сцены " + scenename)
             terminate()

@@ -41,6 +41,8 @@ class Level:
         self.bullet_sprites = pygame.sprite.Group()
         self.hp_sprites = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
+        self.but_sprites = pygame.sprite.Group()
+        self.pause = False
 
         filename = "data/LevelsLists/" + level_text
         with open(filename, 'r') as mapFile:
@@ -54,48 +56,74 @@ class Level:
                     self.all_sprites.add(Floor(50 * j, 50 * i, "floor.png", self.floor_sprites))
                 elif level[i][j] == "@":
                     self.hero = Hero(50 * j, 50 * i - 40, self.hero_sprites)
-                    self.all_sprites.add(self.hero)
                 elif level[i][j] == "#":
                     self.all_sprites.add(Enemy(50 * j, 50 * i - 20, self.enemy_sprites))
 
     def render(self, screen):
         screen.fill((0, 0, 0))
         self.all_sprites.draw(screen)
+        self.hero_sprites.draw(screen)
         self.hp_sprites.draw(screen)
         self.bullet_sprites.draw(screen)
+        if self.pause:
+            self.but_sprites.draw(screen)
 
     def gravity(self):
-        self.hero.gravity(self.floor_sprites)
-        for i in self.enemy_sprites:
-            i.gravity(self.floor_sprites)
-        for i in self.bullet_sprites:
-            i.fly(self.all_sprites)
+        if not self.pause:
+            self.hero.gravity(self.floor_sprites)
+            for i in self.enemy_sprites:
+                i.gravity(self.floor_sprites)
+            for i in self.bullet_sprites:
+                i.fly(self.all_sprites, self.hero_sprites)
 
-        for i in range(self.hero.hp):
-            if i % 20 == 0:
-                HealthPoint(i * 30 + 10, 10, self.hp_sprites)
+            for i in range(self.hero.hp):
+                if i % 20 == 0:
+                    HealthPoint(i * 30 + 10, 10, self.hp_sprites)
 
-        for i in self.hp_sprites:
-            i.kill()
-        for i in range(self.hero.hp):
-            if i % 20 == 0:
-                HealthPoint((i // 20) * 30 + 10, 10, self.hp_sprites)
+            for i in self.hp_sprites:
+                i.kill()
+            for i in range(self.hero.hp):
+                if i % 20 == 0:
+                    HealthPoint((i // 20) * 30 + 10, 10, self.hp_sprites)
 
     def movingupdate(self):
-        for i in self.enemy_sprites:
-            new_bullet = i.moving(self.floor_sprites, self.hero_sprites)
-            if new_bullet:
-                self.bullet_sprites.add(new_bullet)
+        if not self.pause:
+            for i in self.enemy_sprites:
+                new_bullet = i.moving(self.floor_sprites, self.hero_sprites)
+                if new_bullet:
+                    self.bullet_sprites.add(new_bullet)
 
     def animateupdate(self):
-        self.hero.animate()
+        if not self.pause:
+            self.hero.animate()
 
 
 class Level1(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
+        Button("continue", "continuebut.png", 336, 300, self.but_sprites)
+        Button("menu", "exittomenu.png", 336, 360, self.but_sprites)
+        Button("quit", "quitbut.png", 336, 420, self.but_sprites)
 
-    def eventupdate(self, event):
-        new_bullet = self.hero.eventin(event, self.floor_sprites, self.all_sprites)
-        if new_bullet:
-            self.bullet_sprites.add(new_bullet)
+    def click(self, pos, scr):
+        for i in self.but_sprites:
+            if i.click(pos):
+                return i.name
+        return "level1"
+
+    def eventupdate(self, event, screen):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.pause = not self.pause
+
+        if self.pause:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x = self.click(event.pos, screen)
+                if x == "continue":
+                    self.pause = not self.pause
+                else:
+                    return x
+        else:
+            new_bullet = self.hero.eventin(event, self.floor_sprites, self.all_sprites)
+            if new_bullet:
+                self.bullet_sprites.add(new_bullet)

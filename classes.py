@@ -49,7 +49,7 @@ class Bullet(pygame.sprite.Sprite):
         if move_on_right:
             self.move = speed
 
-    def fly(self, all_sprites):
+    def fly(self, all_sprites, hero_sprites):
         self.rect.x += self.move
         if not (-100 <= self.rect.x <= 1000):
             self.kill()
@@ -57,7 +57,10 @@ class Bullet(pygame.sprite.Sprite):
         if x:
             if type(x) == Enemy:
                 x.get_hit()
-            elif type(x) == Hero:
+            self.kill()
+        x = pygame.sprite.spritecollideany(self, hero_sprites)
+        if x:
+            if type(x) == Hero:
                 x.get_hit()
             self.kill()
 
@@ -176,11 +179,10 @@ class Hero(Person):
                         self.rect.x -= sp
                 else:
                     for i in all_sprites:
-                        i.rect.x += sp * 2
+                        i.rect.x += sp
 
     def get_hit(self):
         super().get_hit()
-        print(self.hp)
 
     def eventin(self, event, floor_sprites, all_sprites):
         if self.hp > 0:
