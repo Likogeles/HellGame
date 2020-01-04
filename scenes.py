@@ -80,8 +80,7 @@ class Level:
                 x = i.fly(self.all_sprites, self.hero_sprites)
                 if type(x) == int:
                     if x <= 0:
-                        print("Герой погиб, нужно меню")
-                        return "menu"
+                        return "level_1"
             for i in range(self.hero.hp):
                 if i % 20 == 0:
                     HealthPoint(i * 30 + 10, 10, self.hp_sprites)

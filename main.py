@@ -17,6 +17,7 @@ screen = pygame.display.set_mode((972, 600))
 
 scenename = "menu"
 oldscenname = scenename
+scenenames = ["newgame", "menu", "level_1", "level1"]
 
 download_image = pygame.sprite.Sprite()
 download_image.image = load_image("download.png")
@@ -45,8 +46,11 @@ while True:
         terminate()
     elif scenename == "menu":
         Scene = Menu()
-    elif scenename == "newgame" or scenename == "level_1":
+    elif scenename == "newgame":
         # Сброс базы данных
+        Scene = Level1("Level_1.txt")
+        scenename = "level1"
+    elif scenename == "level_1":
         Scene = Level1("Level_1.txt")
         scenename = "level1"
     # Сюда нужно подставлять остальные сцены по мере их готовности
@@ -71,7 +75,7 @@ while True:
             x = Scene.eventupdate(event)
             if x:
                 scenename = x
-        else:
+        if scenename not in scenenames:
             print("Нет сцены " + scenename)
             terminate()
 
