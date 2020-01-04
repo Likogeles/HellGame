@@ -75,9 +75,13 @@ class Level:
             self.hero.gravity(self.floor_sprites)
             for i in self.enemy_sprites:
                 i.gravity(self.floor_sprites)
-            for i in self.bullet_sprites:
-                i.fly(self.all_sprites, self.hero_sprites)
 
+            for i in self.bullet_sprites:
+                x = i.fly(self.all_sprites, self.hero_sprites)
+                if type(x) == int:
+                    if x <= 0:
+                        print("Герой погиб, нужно меню")
+                        return "menu"
             for i in range(self.hero.hp):
                 if i % 20 == 0:
                     HealthPoint(i * 30 + 10, 10, self.hp_sprites)
@@ -107,20 +111,20 @@ class Level1(Level):
         Button("menu", "exittomenu.png", 336, 360, self.but_sprites)
         Button("quit", "quitbut.png", 336, 420, self.but_sprites)
 
-    def click(self, pos, scr):
+    def click(self, pos):
         for i in self.but_sprites:
             if i.click(pos):
                 return i.name
         return "level1"
 
-    def eventupdate(self, event, screen):
+    def eventupdate(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.pause = not self.pause
 
         if self.pause:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                x = self.click(event.pos, screen)
+                x = self.click(event.pos)
                 if x == "continue":
                     self.pause = not self.pause
                 else:

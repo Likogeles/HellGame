@@ -56,7 +56,9 @@ while True:
             terminate()
         if "level" in scenename[:5]:
             if event.type == GRAVITYEVENT:
-                Scene.gravity()
+                x = Scene.gravity()
+                if x:
+                    scenename = x
             elif event.type == ANIMATEEVENT:
                 Scene.animateupdate()
             elif event.type == MOVINGEVENT:
@@ -66,7 +68,7 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 scenename = Scene.click(event.pos, screen)
         elif scenename == "level1":
-            x = Scene.eventupdate(event, screen)
+            x = Scene.eventupdate(event)
             if x:
                 scenename = x
         else:

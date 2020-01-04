@@ -70,11 +70,13 @@ class Bullet(pygame.sprite.Sprite):
                 self.kill()
             elif type(x) == Floor:
                 self.kill()
+
         x = pygame.sprite.spritecollideany(self, hero_sprites)
         if x:
             if type(x) == Hero:
                 x.get_hit()
-            self.kill()
+                self.kill()
+                return x.hp
 
 
 class Person(pygame.sprite.Sprite):
