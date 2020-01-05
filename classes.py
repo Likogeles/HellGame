@@ -38,6 +38,32 @@ class Floor(pygame.sprite.Sprite):
         self.rect.y = y
 
 
+class Box(Floor):
+    def __init__(self, x, y, imgname, *group):
+        super().__init__( x, y, imgname, *group)
+        self.gravity_acceleration = 0
+        self.gravity_log = True
+
+    def gravity(self, floor_sprites):
+        self.rect.y += 1 + int(self.gravity_acceleration)
+        x = pygame.sprite.Group()
+        for i in floor_sprites:
+            if i != self:
+                x.add(i)
+        if pygame.sprite.spritecollideany(self, x):
+            self.rect.y -= 1 + int(self.gravity_acceleration)
+            self.gravity_acceleration = 0
+            self.gravity_log = False
+        elif self.gravity_log:
+            self.gravity_acceleration += 0.1
+            if self.gravity_acceleration > 50:
+                self.gravity_acceleration = 50
+        else:
+            self.gravity_acceleration += 0.1
+        if self.rect.y > 600:
+            self.rect.y = -100
+
+
 class Endlevel(pygame.sprite.Sprite):
     def __init__(self, x, y, name_of_next_level, imgname, *group):
         super().__init__(*group)

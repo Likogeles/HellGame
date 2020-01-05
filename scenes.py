@@ -2,7 +2,7 @@ import pygame
 import time
 
 
-from classes import HealthPoint, Button, Floor, Endlevel, Bullet, Hero, Enemy
+from classes import HealthPoint, Button, Floor, Endlevel, Bullet, Hero, Enemy, Box
 
 
 class Menu:
@@ -37,6 +37,7 @@ class Level:
     def __init__(self, level_text):
         self.hero_sprites = pygame.sprite.Group()
         self.floor_sprites = pygame.sprite.Group()
+        self.boxes_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
         self.bullet_sprites = pygame.sprite.Group()
         self.hp_sprites = pygame.sprite.Group()
@@ -54,6 +55,10 @@ class Level:
             for j in range(len(level[0])):
                 if level[i][j] == "=":
                     self.all_sprites.add(Floor(50 * j, 50 * i, "floor.png", self.floor_sprites))
+                elif level[i][j] == "0":
+                    x = Box(50 * j, 50 * i, "box.png", self.boxes_sprites)
+                    self.all_sprites.add(x)
+                    self.floor_sprites.add(x)
                 elif level[i][j] == "@":
                     self.hero = Hero(50 * j, 50 * i - 40, self.hero_sprites)
                 elif level[i][j] == "#":
@@ -74,6 +79,8 @@ class Level:
         if not self.pause:
             self.hero.gravity(self.floor_sprites)
             for i in self.enemy_sprites:
+                i.gravity(self.floor_sprites)
+            for i in self.boxes_sprites:
                 i.gravity(self.floor_sprites)
 
             for i in self.bullet_sprites:
