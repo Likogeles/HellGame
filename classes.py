@@ -94,7 +94,7 @@ class Bullet(pygame.sprite.Sprite):
             if type(x) == Enemy:
                 x.get_hit()
                 self.kill()
-            elif type(x) == Floor:
+            elif type(x) == Floor or type(x) == Box:
                 self.kill()
 
         x = pygame.sprite.spritecollideany(self, hero_sprites)
