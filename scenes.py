@@ -73,14 +73,15 @@ class Level:
         self.hp_sprites.draw(screen)
         self.bullet_sprites.draw(screen)
         if self.pause:
+            pygame.mouse.set_visible(True)
             self.but_sprites.draw(screen)
+        else:
+            pygame.mouse.set_visible(False)
 
     def gravity(self):
         if not self.pause:
             self.hero.gravity(self.floor_sprites)
             for i in self.enemy_sprites:
-                i.gravity(self.floor_sprites)
-            for i in self.boxes_sprites:
                 i.gravity(self.floor_sprites)
 
             for i in self.bullet_sprites:

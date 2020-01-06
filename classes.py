@@ -43,25 +43,12 @@ class Box(Floor):
         super().__init__( x, y, imgname, *group)
         self.gravity_acceleration = 0
         self.gravity_log = True
+        self.hp = 100
 
-    def gravity(self, floor_sprites):
-        self.rect.y += 1 + int(self.gravity_acceleration)
-        x = pygame.sprite.Group()
-        for i in floor_sprites:
-            if i != self:
-                x.add(i)
-        if pygame.sprite.spritecollideany(self, x):
-            self.rect.y -= 1 + int(self.gravity_acceleration)
-            self.gravity_acceleration = 0
-            self.gravity_log = False
-        elif self.gravity_log:
-            self.gravity_acceleration += 0.1
-            if self.gravity_acceleration > 50:
-                self.gravity_acceleration = 50
-        else:
-            self.gravity_acceleration += 0.1
-        if self.rect.y > 600:
-            self.rect.y = -100
+    def get_hit(self):
+        self.hp -= 20
+        if self.hp <= 0:
+            self.kill()
 
 
 class Endlevel(pygame.sprite.Sprite):
@@ -91,10 +78,10 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
         x = pygame.sprite.spritecollideany(self, all_sprites)
         if x:
-            if type(x) == Enemy:
+            if type(x) == Enemy or type(x) == Box:
                 x.get_hit()
                 self.kill()
-            elif type(x) == Floor or type(x) == Box:
+            elif type(x) == Floor:
                 self.kill()
 
         x = pygame.sprite.spritecollideany(self, hero_sprites)
