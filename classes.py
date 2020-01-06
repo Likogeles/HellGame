@@ -1,4 +1,5 @@
 import pygame
+import math
 
 from functions import load_image, check_block, check_hero
 
@@ -40,7 +41,7 @@ class Floor(pygame.sprite.Sprite):
 
 class Box(Floor):
     def __init__(self, x, y, imgname, *group):
-        super().__init__( x, y, imgname, *group)
+        super().__init__(x, y, imgname, *group)
         self.gravity_acceleration = 0
         self.gravity_log = True
         self.hp = 100
@@ -61,8 +62,17 @@ class Endlevel(pygame.sprite.Sprite):
         self.nextlevel = name_of_next_level
 
 
+class BulletSliderSprite(pygame.sprite.Sprite):
+    def __init__(self, imgname, *group):
+        super().__init__(*group)
+        self.image = load_image("Bullets/" + imgname, -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = 10
+        self.rect.y = 40
+
+
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, move_on_right, speed, imgname, *group):
+    def __init__(self, x, y, move_on_right, speed, imgname="bull_0.png", *group):
         super().__init__(*group)
         self.image = load_image("Bullets/" + imgname, -1)
         self.rect = self.image.get_rect()
@@ -71,6 +81,7 @@ class Bullet(pygame.sprite.Sprite):
         self.move = -speed
         if move_on_right:
             self.move = speed
+
 
     def fly(self, all_sprites, hero_sprites):
         self.rect.x += self.move
@@ -90,6 +101,20 @@ class Bullet(pygame.sprite.Sprite):
                 x.get_hit()
                 self.kill()
                 return x.hp
+
+
+class SinusBullet(Bullet):
+    def __init__(self, x, y, move_on_right, speed, *group):
+        super().__init__(x, y, move_on_right, speed, "bull_1.png", *group)
+        self.move = - math.pi * 3
+        if move_on_right:
+            self.move = -self.move
+        self.oldx = x
+        self.oldy = y
+
+    def fly(self, all_sprites, hero_sprites):
+        self.rect.y = self.oldy + int(math.sin((self.rect.x - self.oldx) // 18) * 15)
+        return super().fly(all_sprites, hero_sprites)
 
 
 class Person(pygame.sprite.Sprite):
@@ -128,6 +153,8 @@ class Person(pygame.sprite.Sprite):
 class Hero(Person):
     def __init__(self, x, y, *group):
         super().__init__(x, y, "Hero/hero_0.png", *group)
+
+        self.weapons_slide = 0
 
         self.t = 0
         self.standing_right = []
@@ -208,9 +235,6 @@ class Hero(Person):
                     for i in all_sprites:
                         i.rect.x += sp
 
-    def get_hit(self):
-        super().get_hit()
-
     def eventin(self, event, floor_sprites, all_sprites):
         if self.hp > 0:
             new_bullet = None
@@ -219,12 +243,18 @@ class Hero(Person):
                     self.beginmove(event, floor_sprites)
                 elif event.key == pygame.K_j:
                     x = self.rect.x
-                    y = self.rect.y + 10
                     if self.oldrunningwasright:
                         x += 50
                     else:
                         x -= 25
-                    new_bullet = Bullet(x, y, self.oldrunningwasright, 10, "bull_0.png")
+                    if self.weapons_slide == 0:
+                        new_bullet = Bullet(x, self.rect.y + 10, self.oldrunningwasright, 10)
+                    elif self.weapons_slide == 1:
+                        new_bullet = SinusBullet(x, self.rect.y + 24, self.oldrunningwasright, 10)
+                elif event.key == pygame.K_i:
+                    self.weapons_slide = 0
+                elif event.key == pygame.K_o:
+                    self.weapons_slide = 1
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_d or event.key == pygame.K_a:
                     self.stopmove(event)
