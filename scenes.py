@@ -11,30 +11,55 @@ from classes import Hero, Enemy
 class Menu:
     def __init__(self):
         pygame.mouse.set_visible(True)
-        self.but_sprites = pygame.sprite.Group()
-        Button("continue", "continuebut.png", 336, 300, self.but_sprites)
-        Button("newgame", "newgamebut.png", 336, 360, self.but_sprites)
-        Button("listlevels", "levelsbut.png", 336, 420, self.but_sprites)
-        Button("quit", "quitbut.png", 336, 480, self.but_sprites)
+        self.menu_but_sprites = pygame.sprite.Group()
+        Button("continue", "continuebut.png", 336, 300, self.menu_but_sprites)
+        Button("newgame", "newgamebut.png", 336, 360, self.menu_but_sprites)
+        Button("listlevels_", "levelsbut.png", 336, 420, self.menu_but_sprites)
+        Button("quit", "quitbut.png", 336, 480, self.menu_but_sprites)
         # Временно обозначено управление
-        Button("", "upravlenie.png", 50, 50, self.but_sprites)
+        Button("", "upravlenie.png", 50, 50, self.menu_but_sprites)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
-        self.but_sprites.draw(screen)
+        self.menu_but_sprites.draw(screen)
 
     def click(self, pos, scr):
-        for i in self.but_sprites:
+        for i in self.menu_but_sprites:
             if i.click(pos):
                 while i.rect.x < 970:
-                    for j in self.but_sprites:
+                    for j in self.menu_but_sprites:
                         j.rect.x += 50
                         scr.fill((0, 0, 0))
-                        self.but_sprites.draw(scr)
+                        self.menu_but_sprites.draw(scr)
                         pygame.display.flip()
                         time.sleep(0.001)
                 return i.name
         return "menu"
+
+
+class Listlevels:
+    def __init__(self):
+        self.menu_but_sprites = pygame.sprite.Group()
+        Button("level_1", "level_1.png", 336, 300, self.menu_but_sprites)
+        Button("menu_", "back.png", 336, 480, self.menu_but_sprites)
+        # Временно обозначено управление
+
+    def render(self, screen):
+        screen.fill((0, 0, 0))
+        self.menu_but_sprites.draw(screen)
+
+    def click(self, pos, scr):
+        for i in self.menu_but_sprites:
+            if i.click(pos):
+                while i.rect.x < 970:
+                    for j in self.menu_but_sprites:
+                        j.rect.x += 50
+                        scr.fill((0, 0, 0))
+                        self.menu_but_sprites.draw(scr)
+                        pygame.display.flip()
+                        time.sleep(0.01)
+                return i.name
+        return "Listlevels"
 
 
 class Level:
@@ -71,7 +96,7 @@ class Level:
                 elif level[i][j] == "#":
                     self.all_sprites.add(Enemy(50 * j, 50 * i - 20, self.enemy_sprites))
                 elif level[i][j] == "+":
-                    Endlevel(50 * j, 50 * i - 50, "menu", "level1.png", self.all_sprites)
+                    Endlevel(50 * j, 50 * i - 50, "menu_", "level1.png", self.all_sprites)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
@@ -160,5 +185,5 @@ class Level1(Level):
                     self.bullet_sprites.add(x)
                 elif type(x) == SinusBullet:
                     self.bullet_sprites.add(x)
-                elif x == "menu":
+                elif x == "menu_":
                     return x

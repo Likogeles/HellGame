@@ -1,9 +1,9 @@
 import pygame
 import sys
-import time
 
-from scenes import Menu, Level1
+from scenes import Menu, Listlevels, Level1
 from functions import load_image
+
 
 def terminate():
     pygame.quit()
@@ -15,9 +15,9 @@ pygame.display.set_caption("Hell Game")
 screen = pygame.display.set_mode((972, 600))
 
 
-scenename = "menu"
+scenename = "menu_"
 oldscenname = scenename
-scenenames = ["newgame", "menu", "level_1", "level1", "quit"]
+scenenames = ["newgame", "menu_", "menu", "listlevels_", "listlevels", "level_1", "level1", "quit"]
 
 download_image = pygame.sprite.Sprite()
 download_image.image = load_image("download.png")
@@ -46,8 +46,12 @@ while True:
         pygame.display.flip()
     if scenename == "quit":
         terminate()
-    elif scenename == "menu":
+    elif scenename == "menu_":
         Scene = Menu()
+        scenename= "menu"
+    elif scenename == "listlevels_":
+        Scene = Listlevels()
+        scenename= "listlevels"
     elif scenename == "newgame":
         # Сброс базы данных
         Scene = Level1("Level_1.txt")
@@ -73,6 +77,9 @@ while True:
                 Scene.hero_shoot()
 
         if scenename == "menu":
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                scenename = Scene.click(event.pos, screen)
+        elif scenename == "listlevels":
             if event.type == pygame.MOUSEBUTTONDOWN:
                 scenename = Scene.click(event.pos, screen)
         elif scenename == "level1":
