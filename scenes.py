@@ -17,7 +17,7 @@ class Menu:
         Button("listlevels_", "levelsbut.png", 336, 420, self.menu_but_sprites)
         Button("quit", "quitbut.png", 336, 480, self.menu_but_sprites)
         # Временно обозначено управление
-        Button("", "upravlenie.png", 50, 50, self.menu_but_sprites)
+        Button("menu_", "upravlenie.png", 50, 50, self.menu_but_sprites)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
@@ -152,7 +152,7 @@ class Level1(Level):
         super().__init__(level_text)
         Button("continue", "continuebut.png", 336, 300, self.but_sprites)
         Button("level_1", "again.png", 336, 360, self.but_sprites)
-        Button("menu", "exittomenu.png", 336, 420, self.but_sprites)
+        Button("menu_", "exittomenu.png", 336, 420, self.but_sprites)
         Button("quit", "quitbut.png", 336, 480, self.but_sprites)
 
     def hero_shoot(self):
