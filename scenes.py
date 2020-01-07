@@ -126,8 +126,9 @@ class Level1(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
         Button("continue", "continuebut.png", 336, 300, self.but_sprites)
-        Button("menu", "exittomenu.png", 336, 360, self.but_sprites)
-        Button("quit", "quitbut.png", 336, 420, self.but_sprites)
+        Button("level_1", "again.png", 336, 360, self.but_sprites)
+        Button("menu", "exittomenu.png", 336, 420, self.but_sprites)
+        Button("quit", "quitbut.png", 336, 480, self.but_sprites)
 
     def hero_shoot(self):
         x = self.hero.shoot()

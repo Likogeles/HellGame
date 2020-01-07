@@ -17,7 +17,7 @@ screen = pygame.display.set_mode((972, 600))
 
 scenename = "menu"
 oldscenname = scenename
-scenenames = ["newgame", "menu", "level_1", "level1"]
+scenenames = ["newgame", "menu", "level_1", "level1", "quit"]
 
 download_image = pygame.sprite.Sprite()
 download_image.image = load_image("download.png")
