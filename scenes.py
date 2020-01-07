@@ -5,7 +5,7 @@ import time
 from classes import HealthPoint, BulletSliderSprite, Button
 from classes import Floor, Endlevel, Box
 from classes import Bullet, SinusBullet
-from classes import Hero, Enemy
+from classes import Hero, BaseEnemy, UpEnemy
 
 
 class Menu:
@@ -74,6 +74,7 @@ class Level:
         self.all_sprites = pygame.sprite.Group()
         self.but_sprites = pygame.sprite.Group()
         self.pause = False
+        self.level_text = level_text[:-4].lower()
 
         self.bullet_0_slider = pygame.sprite.Group(BulletSliderSprite("bull_0_slider.png"))
         self.bullet_1_slider = pygame.sprite.Group(BulletSliderSprite("bull_1_slider.png"))
@@ -95,7 +96,9 @@ class Level:
                 elif level[i][j] == "@":
                     self.hero = Hero(50 * j, 50 * i - 40, self.hero_sprites)
                 elif level[i][j] == "#":
-                    self.all_sprites.add(Enemy(50 * j, 50 * i - 20, self.enemy_sprites))
+                    self.all_sprites.add(BaseEnemy(50 * j, 50 * i - 20, self.enemy_sprites))
+                elif level[i][j] == "&":
+                    self.all_sprites.add(UpEnemy(50 * j, 50 * i - 20, self.enemy_sprites))
                 elif level[i][j] == "+":
                     if level_text == "Level_1.txt":
                         Endlevel(50 * j, 50 * i - 50, "level_2", "level1.png", self.all_sprites)
@@ -128,7 +131,7 @@ class Level:
                 x = i.fly(self.all_sprites, self.hero_sprites)
                 if type(x) == int:
                     if x <= 0:
-                        return "level_1"
+                        return self.level_text
             for i in range(self.hero.hp):
                 if i % 20 == 0:
                     HealthPoint(i * 30 + 10, 10, self.hp_sprites)
@@ -145,6 +148,7 @@ class Level:
                 new_bullet = i.moving(self.floor_sprites, self.hero_sprites)
                 if new_bullet:
                     self.bullet_sprites.add(new_bullet)
+                    self.all_sprites.add(new_bullet)
 
     def animateupdate(self):
         if not self.pause:

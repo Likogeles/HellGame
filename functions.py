@@ -41,3 +41,19 @@ def check_hero(x, y, move_right, hero_sprites):
             return True
     sprite.kill()
     return False
+
+
+def check_hero_down(x, y, hero_sprites):
+    sprite = pygame.sprite.Sprite()
+    sprite.image = load_image("Enemys/check_hero.png")
+    sprite.rect = sprite.image.get_rect()
+    sprite.rect.x = x
+    sprite.rect.y = y
+    sp = 10
+    while sprite.rect.y <= 600:
+        sprite.rect.y += sp
+        if pygame.sprite.spritecollideany(sprite, hero_sprites):
+            sprite.kill()
+            return True
+    sprite.kill()
+    return False

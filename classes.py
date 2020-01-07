@@ -1,7 +1,7 @@
 import pygame
 import math
 
-from functions import load_image, check_block, check_hero
+from functions import load_image, check_block, check_hero, check_hero_down
 
 
 class HealthPoint(pygame.sprite.Sprite):
@@ -101,7 +101,7 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
         x = pygame.sprite.spritecollideany(self, all_sprites)
         if x:
-            if type(x) == Enemy or type(x) == Box:
+            if type(x) == BaseEnemy or type(x) == Box:
                 x.get_hit(20)
                 self.kill()
             elif type(x) == Floor:
@@ -131,11 +131,40 @@ class SinusBullet(Bullet):
             self.kill()
         x = pygame.sprite.spritecollideany(self, all_sprites)
         if x:
-            if type(x) == Enemy or type(x) == Box:
+            if type(x) == BaseEnemy or type(x) == Box:
                 x.get_hit(5)
                 self.kill()
             elif type(x) == Floor:
                 self.kill()
+
+
+class DownBullet(Bullet):
+    def __init__(self, x, y, speed, *group):
+        super().__init__(x, y, False, speed, "bull_2.png", *group)
+        self.image = load_image("Bullets/" + "bull_2.png", -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.move = speed
+
+    def fly(self, all_sprites, hero_sprites):
+        self.rect.y += self.move
+        if not (self.rect.y <= 600):
+            self.kill()
+        x = pygame.sprite.spritecollideany(self, all_sprites)
+        if x:
+            if type(x) == BaseEnemy or type(x) == Box:
+                x.get_hit(50)
+                self.kill()
+            elif type(x) == Floor:
+                self.kill()
+
+        x = pygame.sprite.spritecollideany(self, hero_sprites)
+        if x:
+            if type(x) == Hero:
+                x.get_hit(50)
+                self.kill()
+                return x.hp
 
 
 class Person(pygame.sprite.Sprite):
@@ -325,9 +354,9 @@ class Hero(Person):
             self.shooting_log = False
 
 
-class Enemy(Person):
+class BaseEnemy(Person):
     def __init__(self, x, y, *group):
-        super().__init__(x, y, "Enemys/Enemy_0.png", *group)
+        super().__init__(x, y, "Enemys/Enemy_base.png", *group)
         self.bullet_spawn = 1000
 
     def moving(self, floor_sprites, hero_sprites):
@@ -360,3 +389,23 @@ class Enemy(Person):
                 else:
                     self.oldrunningwasright = True
         return None
+
+
+class UpEnemy(Person):
+    def __init__(self, x, y, *group):
+        super().__init__(x, y, "Enemys/Enemy_up.png", *group)
+        self.bullet_spawn = 1000
+
+    def moving(self, floor_sprites, hero_sprites):
+        if check_hero_down(self.rect.x + 25, self.rect.y + 70, hero_sprites):
+            if self.bullet_spawn > 50:
+                self.bullet_spawn = 0
+                return DownBullet(self.rect.x + 5, self.rect.y + 60, 5)
+            else:
+                self.bullet_spawn += 1
+        else:
+            self.bullet_spawn = 50
+        return None
+
+    def gravity(self, *args):
+        pass
