@@ -295,6 +295,43 @@ class Hero(Person):
                     for i in all_sprites:
                         i.rect.x += sp
 
+    def gravity(self, floor_sprites, all_sprites):
+        sp = 1 + int(self.gravity_acceleration)
+        # if pygame.sprite.spritecollideany(self, floor_sprites):
+        #     self.rect.y -= sp
+        #     self.gravity_acceleration = 0
+        #     self.gravity_log = False
+        # elif self.gravity_log:
+        #     self.gravity_acceleration += 0.1
+        #     if self.gravity_acceleration > 50:
+        #         self.gravity_acceleration = 50
+        # else:
+        #     self.gravity_acceleration += 0.1
+
+        self.rect.y += sp
+        if pygame.sprite.spritecollideany(self, floor_sprites):
+            self.rect.y -= sp
+            self.gravity_acceleration = 0
+            self.gravity_log = False
+        elif self.gravity_log:
+            self.rect.y -= sp
+            if 250 <= self.rect.y <= 260:
+                if self.min_point_level[1] - sp > 0 or self.max_point_level[1] - sp < 550:
+                    if 0 <= self.rect.x + sp <= 510:
+                        self.rect.y += sp
+                else:
+                    self.min_point_level[1] -= sp
+                    self.max_point_level[1] -= sp
+                    for i in all_sprites:
+                        i.rect.y -= sp
+            else:
+                if 0 <= self.rect.y <= 510:
+                    self.rect.y += sp
+
+            self.gravity_acceleration += 0.1
+            if self.gravity_acceleration > 50:
+                self.gravity_acceleration = 50
+
     def shoot(self):
         if self.shooting_log:
             x = self.rect.x
@@ -352,8 +389,8 @@ class Hero(Person):
             self.rect.y += 1
             if pygame.sprite.spritecollideany(self, floor_sprites):
                 self.gravity_log = True
-                self.rect.y -= 5
                 self.gravity_acceleration = -7
+            self.rect.y -= 1
 
     def stopmove(self, event):
         if event.key == pygame.K_d:

@@ -123,7 +123,7 @@ class Level:
 
     def gravity(self):
         if not self.pause:
-            self.hero.gravity(self.floor_sprites)
+            self.hero.gravity(self.floor_sprites, self.all_sprites)
             for i in self.enemy_sprites:
                 i.gravity(self.floor_sprites)
 
