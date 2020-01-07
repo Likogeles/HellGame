@@ -36,6 +36,8 @@ ANIMATEEVENT = 31
 pygame.time.set_timer(ANIMATEEVENT, 80)
 MOVINGEVENT = 29
 pygame.time.set_timer(MOVINGEVENT, 20)
+SHOOTINGEVENT = 28
+pygame.time.set_timer(SHOOTINGEVENT, 50)
 
 while True:
     if scenename != oldscenname:
@@ -67,6 +69,8 @@ while True:
                 Scene.animateupdate()
             elif event.type == MOVINGEVENT:
                 Scene.movingupdate()
+            elif event.type == SHOOTINGEVENT:
+                Scene.hero_shoot()
 
         if scenename == "menu":
             if event.type == pygame.MOUSEBUTTONDOWN:

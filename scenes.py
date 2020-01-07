@@ -129,6 +129,11 @@ class Level1(Level):
         Button("menu", "exittomenu.png", 336, 360, self.but_sprites)
         Button("quit", "quitbut.png", 336, 420, self.but_sprites)
 
+    def hero_shoot(self):
+        x = self.hero.shoot()
+        if x:
+            self.bullet_sprites.add(x)
+
     def click(self, pos):
         for i in self.but_sprites:
             if i.click(pos):

@@ -45,9 +45,22 @@ class Box(Floor):
         self.gravity_acceleration = 0
         self.gravity_log = True
         self.hp = 100
+        self.t = 0
 
-    def get_hit(self):
-        self.hp -= 20
+    def get_hit(self, damage):
+        if self.t == 0:
+            self.rect.x += 2
+        elif self.t == 1:
+            self.rect.x -= 2
+        elif self.t == 2:
+            self.rect.x -= 2
+        elif self.t == 3:
+            self.rect.x += 2
+        self.t += 1
+        if self.t > 3:
+            self.t = 0
+
+        self.hp -= damage
         if self.hp <= 0:
             self.kill()
 
@@ -82,7 +95,6 @@ class Bullet(pygame.sprite.Sprite):
         if move_on_right:
             self.move = speed
 
-
     def fly(self, all_sprites, hero_sprites):
         self.rect.x += self.move
         if not (-100 <= self.rect.x <= 1000):
@@ -90,7 +102,7 @@ class Bullet(pygame.sprite.Sprite):
         x = pygame.sprite.spritecollideany(self, all_sprites)
         if x:
             if type(x) == Enemy or type(x) == Box:
-                x.get_hit()
+                x.get_hit(20)
                 self.kill()
             elif type(x) == Floor:
                 self.kill()
@@ -98,7 +110,7 @@ class Bullet(pygame.sprite.Sprite):
         x = pygame.sprite.spritecollideany(self, hero_sprites)
         if x:
             if type(x) == Hero:
-                x.get_hit()
+                x.get_hit(20)
                 self.kill()
                 return x.hp
 
@@ -106,15 +118,24 @@ class Bullet(pygame.sprite.Sprite):
 class SinusBullet(Bullet):
     def __init__(self, x, y, move_on_right, speed, *group):
         super().__init__(x, y, move_on_right, speed, "bull_1.png", *group)
-        self.move = - math.pi * 3
+        self.move = - math.pi * 2
         if move_on_right:
             self.move = -self.move
         self.oldx = x
         self.oldy = y
 
     def fly(self, all_sprites, hero_sprites):
-        self.rect.y = self.oldy + int(math.sin((self.rect.x - self.oldx) // 18) * 15)
-        return super().fly(all_sprites, hero_sprites)
+        self.rect.y = self.oldy + int(math.sin((self.rect.x - self.oldx) // 18) * 22)
+        self.rect.x += self.move
+        if not (-100 <= self.rect.x <= 1000):
+            self.kill()
+        x = pygame.sprite.spritecollideany(self, all_sprites)
+        if x:
+            if type(x) == Enemy or type(x) == Box:
+                x.get_hit(5)
+                self.kill()
+            elif type(x) == Floor:
+                self.kill()
 
 
 class Person(pygame.sprite.Sprite):
@@ -144,8 +165,8 @@ class Person(pygame.sprite.Sprite):
         if self.rect.y > 600:
             self.rect.y = -100
 
-    def get_hit(self):
-        self.hp -= 20
+    def get_hit(self, damage):
+        self.hp -= damage
         if self.hp <= 0:
             self.kill()
 
@@ -155,6 +176,7 @@ class Hero(Person):
         super().__init__(x, y, "Hero/hero_0.png", *group)
 
         self.weapons_slide = 0
+        self.shooting_log = False
 
         self.t = 0
         self.standing_right = []
@@ -215,7 +237,6 @@ class Hero(Person):
                 sp = 2
             self.rect.x += 2
             self.gravity_log = True
-
         if sp != 0:
             if self.rect.x != 486:
                 if 0 <= self.rect.x - sp <= 922:
@@ -235,6 +256,16 @@ class Hero(Person):
                     for i in all_sprites:
                         i.rect.x += sp
 
+    def shoot(self):
+        if self.shooting_log:
+            x = self.rect.x
+            if self.oldrunningwasright:
+                x += 50
+            else:
+                x -= 25
+            if self.weapons_slide == 1:
+                return SinusBullet(x, self.rect.y + 35, self.oldrunningwasright, 10)
+
     def eventin(self, event, floor_sprites, all_sprites):
         if self.hp > 0:
             new_bullet = None
@@ -242,6 +273,7 @@ class Hero(Person):
                 if event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_SPACE:
                     self.beginmove(event, floor_sprites)
                 elif event.key == pygame.K_j:
+                    self.beginmove(event, floor_sprites)
                     x = self.rect.x
                     if self.oldrunningwasright:
                         x += 50
@@ -249,14 +281,12 @@ class Hero(Person):
                         x -= 25
                     if self.weapons_slide == 0:
                         new_bullet = Bullet(x, self.rect.y + 10, self.oldrunningwasright, 10)
-                    elif self.weapons_slide == 1:
-                        new_bullet = SinusBullet(x, self.rect.y + 24, self.oldrunningwasright, 10)
                 elif event.key == pygame.K_i:
                     self.weapons_slide = 0
                 elif event.key == pygame.K_o:
                     self.weapons_slide = 1
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_d or event.key == pygame.K_a:
+                if event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_j:
                     self.stopmove(event)
 
             self.move(floor_sprites, all_sprites)
@@ -277,6 +307,8 @@ class Hero(Person):
             self.left_move = True
             self.right_move = False
             self.gravity_log = True
+        elif event.key == pygame.K_j:
+            self.shooting_log = True
         elif event.key == pygame.K_SPACE:
             self.rect.y += 1
             if pygame.sprite.spritecollideany(self, floor_sprites):
@@ -289,6 +321,8 @@ class Hero(Person):
             self.right_move = False
         elif event.key == pygame.K_a:
             self.left_move = False
+        elif event.key == pygame.K_j:
+            self.shooting_log = False
 
 
 class Enemy(Person):
