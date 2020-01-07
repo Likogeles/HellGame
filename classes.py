@@ -297,23 +297,13 @@ class Hero(Person):
 
     def gravity(self, floor_sprites, all_sprites):
         sp = 1 + int(self.gravity_acceleration)
-        # if pygame.sprite.spritecollideany(self, floor_sprites):
-        #     self.rect.y -= sp
-        #     self.gravity_acceleration = 0
-        #     self.gravity_log = False
-        # elif self.gravity_log:
-        #     self.gravity_acceleration += 0.1
-        #     if self.gravity_acceleration > 50:
-        #         self.gravity_acceleration = 50
-        # else:
-        #     self.gravity_acceleration += 0.1
 
         self.rect.y += sp
-        if pygame.sprite.spritecollideany(self, floor_sprites):
+        if pygame.sprite.spritecollideany(self, floor_sprites) or not 0 <= self.rect.y:
             self.rect.y -= sp
             self.gravity_acceleration = 0
             self.gravity_log = False
-        elif self.gravity_log:
+        else:
             self.rect.y -= sp
             if 250 <= self.rect.y <= 260:
                 if self.min_point_level[1] - sp > 0 or self.max_point_level[1] - sp < 550:
@@ -325,12 +315,15 @@ class Hero(Person):
                     for i in all_sprites:
                         i.rect.y -= sp
             else:
-                if 0 <= self.rect.y <= 510:
+                if 0 <= self.rect.y < 510:
                     self.rect.y += sp
 
             self.gravity_acceleration += 0.1
             if self.gravity_acceleration > 50:
                 self.gravity_acceleration = 50
+            if self.rect.y > 500:
+                self.gravity_acceleration = -5
+        self.gravity_log = True
 
     def shoot(self):
         if self.shooting_log:
@@ -447,7 +440,7 @@ class UpEnemy(Person):
         if check_hero_down(self.rect.x + 25, self.rect.y + 70, hero_sprites):
             if self.bullet_spawn > 50:
                 self.bullet_spawn = 0
-                return DownBullet(self.rect.x + 5, self.rect.y + 60, 5)
+                return DownBullet(self.rect.x + 5, self.rect.y + 60, 1)
             else:
                 self.bullet_spawn += 1
         else:

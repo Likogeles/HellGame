@@ -76,6 +76,11 @@ class Level:
         self.pause = False
         self.level_text = level_text[:-4].lower()
 
+        Button("continue", "continuebut.png", 336, 300, self.but_sprites)
+        Button(self.level_text, "again.png", 336, 360, self.but_sprites)
+        Button("menu_", "exittomenu.png", 336, 420, self.but_sprites)
+        Button("quit", "quitbut.png", 336, 480, self.but_sprites)
+
         self.bullet_0_slider = pygame.sprite.Group(BulletSliderSprite("bull_0_slider.png"))
         self.bullet_1_slider = pygame.sprite.Group(BulletSliderSprite("bull_1_slider.png"))
 
@@ -158,10 +163,6 @@ class Level:
 class Level1(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
-        Button("continue", "continuebut.png", 336, 300, self.but_sprites)
-        Button("level_1", "again.png", 336, 360, self.but_sprites)
-        Button("menu_", "exittomenu.png", 336, 420, self.but_sprites)
-        Button("quit", "quitbut.png", 336, 480, self.but_sprites)
 
     def hero_shoot(self):
         x = self.hero.shoot()
@@ -200,10 +201,6 @@ class Level1(Level):
 class Level2(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
-        Button("continue", "continuebut.png", 336, 300, self.but_sprites)
-        Button("level_1", "again.png", 336, 360, self.but_sprites)
-        Button("menu_", "exittomenu.png", 336, 420, self.but_sprites)
-        Button("quit", "quitbut.png", 336, 480, self.but_sprites)
 
     def hero_shoot(self):
         x = self.hero.shoot()
