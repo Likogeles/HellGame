@@ -207,6 +207,10 @@ class Hero(Person):
         self.weapons_slide = 0
         self.shooting_log = False
 
+        self.max_point_level_poisk_log = True
+        self.min_point_level = [0, 0]
+        self.max_point_level = [50, 50]
+
         self.t = 0
         self.standing_right = []
         for i in range(8):
@@ -252,13 +256,23 @@ class Hero(Person):
                     self.t = 0
 
     def move(self, floor_sprites, all_sprites):
+        if self.max_point_level_poisk_log:
+            self.max_point_level_poisk_log = False
+            maxx = 0
+            maxy = 0
+            for i in all_sprites:
+                if i.rect.x > maxx:
+                    maxx = i.rect.x
+                if i.rect.y > maxy:
+                    maxy = i.rect.y
+            self.max_point_level = [maxx, maxy]
+
         sp = 0
         if self.right_move:
             self.rect.x += 2
             if not(pygame.sprite.spritecollideany(self, floor_sprites)):
                 sp = -2
             self.rect.x -= 2
-
             self.gravity_log = True
         elif self.left_move:
             self.rect.x -= 2
@@ -266,22 +280,18 @@ class Hero(Person):
                 sp = 2
             self.rect.x += 2
             self.gravity_log = True
+
         if sp != 0:
             if self.rect.x != 486:
                 if 0 <= self.rect.x - sp <= 922:
                     self.rect.x -= sp
             else:
-                minx = 0
-                maxx = 0
-                for i in all_sprites:
-                    if i.rect.x <= minx:
-                        minx = i.rect.x
-                    if i.rect.x > maxx:
-                        maxx = i.rect.x
-                if minx + sp > 0 or maxx + sp < 922:
+                if self.min_point_level[0] + sp > 0 or self.max_point_level[0] + sp < 922:
                     if 0 <= self.rect.x - sp <= 922:
                         self.rect.x -= sp
                 else:
+                    self.min_point_level[0] += sp
+                    self.max_point_level[0] += sp
                     for i in all_sprites:
                         i.rect.x += sp
 
