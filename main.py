@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from scenes import Menu, Listlevels, Level1
+from scenes import Menu, Listlevels, Level1, Level2
 from functions import load_image
 
 
@@ -17,7 +17,7 @@ screen = pygame.display.set_mode((972, 600))
 
 scenename = "menu_"
 oldscenname = scenename
-scenenames = ["newgame", "menu_", "menu", "listlevels_", "listlevels", "level_1", "level1", "quit"]
+scenenames = ["newgame", "menu_", "menu", "listlevels_", "listlevels", "level_1", "level1", "level_2", "level2", "quit"]
 
 download_image = pygame.sprite.Sprite()
 download_image.image = load_image("download.png")
@@ -59,6 +59,9 @@ while True:
     elif scenename == "level_1":
         Scene = Level1("Level_1.txt")
         scenename = "level1"
+    elif scenename == "level_2":
+        Scene = Level2("Level_2.txt")
+        scenename = "level2"
     # Сюда нужно подставлять остальные сцены по мере их готовности
 
     for event in pygame.event.get():
@@ -83,6 +86,10 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 scenename = Scene.click(event.pos, screen)
         elif scenename == "level1":
+            x = Scene.eventupdate(event)
+            if x:
+                scenename = x
+        elif scenename == "level2":
             x = Scene.eventupdate(event)
             if x:
                 scenename = x

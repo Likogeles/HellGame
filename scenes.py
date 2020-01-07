@@ -28,11 +28,11 @@ class Menu:
             if i.click(pos):
                 while i.rect.x < 970:
                     for j in self.menu_but_sprites:
-                        j.rect.x += 50
-                        scr.fill((0, 0, 0))
-                        self.menu_but_sprites.draw(scr)
-                        pygame.display.flip()
-                        time.sleep(0.001)
+                        j.rect.x += 10
+                    scr.fill((0, 0, 0))
+                    self.menu_but_sprites.draw(scr)
+                    pygame.display.flip()
+                    time.sleep(0.001)
                 return i.name
         return "menu"
 
@@ -41,6 +41,7 @@ class Listlevels:
     def __init__(self):
         self.menu_but_sprites = pygame.sprite.Group()
         Button("level_1", "level_1.png", 336, 300, self.menu_but_sprites)
+        Button("level_2", "level_2.png", 336, 360, self.menu_but_sprites)
         Button("menu_", "back.png", 336, 480, self.menu_but_sprites)
         # Временно обозначено управление
 
@@ -53,11 +54,11 @@ class Listlevels:
             if i.click(pos):
                 while i.rect.x < 970:
                     for j in self.menu_but_sprites:
-                        j.rect.x += 50
-                        scr.fill((0, 0, 0))
-                        self.menu_but_sprites.draw(scr)
-                        pygame.display.flip()
-                        time.sleep(0.01)
+                        j.rect.x += 10
+                    scr.fill((0, 0, 0))
+                    self.menu_but_sprites.draw(scr)
+                    pygame.display.flip()
+                    time.sleep(0.001)
                 return i.name
         return "Listlevels"
 
@@ -96,7 +97,10 @@ class Level:
                 elif level[i][j] == "#":
                     self.all_sprites.add(Enemy(50 * j, 50 * i - 20, self.enemy_sprites))
                 elif level[i][j] == "+":
-                    Endlevel(50 * j, 50 * i - 50, "menu_", "level1.png", self.all_sprites)
+                    if level_text == "Level_1.txt":
+                        Endlevel(50 * j, 50 * i - 50, "level_2", "level1.png", self.all_sprites)
+                    elif level_text == "Level_2.txt":
+                        Endlevel(50 * j, 50 * i - 50, "menu_", "level1.png", self.all_sprites)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
@@ -148,6 +152,48 @@ class Level:
 
 
 class Level1(Level):
+    def __init__(self, level_text):
+        super().__init__(level_text)
+        Button("continue", "continuebut.png", 336, 300, self.but_sprites)
+        Button("level_1", "again.png", 336, 360, self.but_sprites)
+        Button("menu_", "exittomenu.png", 336, 420, self.but_sprites)
+        Button("quit", "quitbut.png", 336, 480, self.but_sprites)
+
+    def hero_shoot(self):
+        x = self.hero.shoot()
+        if x:
+            self.bullet_sprites.add(x)
+
+    def click(self, pos):
+        for i in self.but_sprites:
+            if i.click(pos):
+                return i.name
+        return "level1"
+
+    def eventupdate(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.pause = not self.pause
+
+        if self.pause:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x = self.click(event.pos)
+                if x == "continue":
+                    self.pause = not self.pause
+                else:
+                    return x
+        else:
+            x = self.hero.eventin(event, self.floor_sprites, self.all_sprites)
+            if x:
+                if type(x) == Bullet:
+                    self.bullet_sprites.add(x)
+                elif type(x) == SinusBullet:
+                    self.bullet_sprites.add(x)
+                elif x == "level_2" or x == "menu_":
+                    return x
+
+
+class Level2(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
         Button("continue", "continuebut.png", 336, 300, self.but_sprites)
