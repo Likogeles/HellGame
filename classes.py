@@ -174,25 +174,8 @@ class Person(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.gravity_acceleration = 0
-        self.gravity_log = True
         self.oldrunningwasright = True
         self.hp = 100
-
-    def gravity(self, floor_sprites):
-        self.rect.y += 1 + int(self.gravity_acceleration)
-        if pygame.sprite.spritecollideany(self, floor_sprites):
-            self.rect.y -= 1 + int(self.gravity_acceleration)
-            self.gravity_acceleration = 0
-            self.gravity_log = False
-        elif self.gravity_log:
-            self.gravity_acceleration += 0.1
-            if self.gravity_acceleration > 50:
-                self.gravity_acceleration = 50
-        else:
-            self.gravity_acceleration += 0.1
-        if self.rect.y > 600:
-            self.rect.y = -100
 
     def get_hit(self, damage):
         self.hp -= damage
@@ -206,6 +189,9 @@ class Hero(Person):
 
         self.weapons_slide = 0
         self.shooting_log = False
+
+        self.gravity_acceleration = 0
+        self.gravity_log = True
 
         self.max_point_level_poisk_log = True
         self.min_point_level = [0, 0]
@@ -296,34 +282,42 @@ class Hero(Person):
                         i.rect.x += sp
 
     def gravity(self, floor_sprites, all_sprites):
+
+        if self.max_point_level_poisk_log:
+            self.max_point_level_poisk_log = False
+            maxx = 0
+            maxy = 0
+            for i in all_sprites:
+                if i.rect.x >= maxx:
+                    maxx = i.rect.x
+                if i.rect.y >= maxy:
+                    maxy = i.rect.y
+            self.max_point_level = [maxx, maxy]
+
         sp = 1 + int(self.gravity_acceleration)
 
         self.rect.y += sp
-        if pygame.sprite.spritecollideany(self, floor_sprites) or not 0 <= self.rect.y:
+        if pygame.sprite.spritecollideany(self, floor_sprites) or not(0 <= self.rect.y <= 510):
+            self.gravity_log = False
             self.rect.y -= sp
             self.gravity_acceleration = 0
-            self.gravity_log = False
         else:
+            self.gravity_log = True
             self.rect.y -= sp
-            if 250 <= self.rect.y <= 260:
-                if self.min_point_level[1] - sp > 0 or self.max_point_level[1] - sp < 550:
-                    if 0 <= self.rect.x + sp <= 510:
-                        self.rect.y += sp
-                else:
-                    self.min_point_level[1] -= sp
-                    self.max_point_level[1] -= sp
-                    for i in all_sprites:
-                        i.rect.y -= sp
+
+        if self.gravity_log:
+            if 250 <= self.rect.y <= 260 and self.min_point_level[1] - sp <= 0 and self.max_point_level[1] - sp >= 550:
+                self.min_point_level[1] -= sp
+                self.max_point_level[1] -= sp
+                for i in all_sprites:
+                    i.rect.y -= sp
             else:
-                if 0 <= self.rect.y < 510:
-                    self.rect.y += sp
+                self.rect.y += sp
 
             self.gravity_acceleration += 0.1
-            if self.gravity_acceleration > 50:
-                self.gravity_acceleration = 50
-            if self.rect.y > 500:
-                self.gravity_acceleration = -5
-        self.gravity_log = True
+
+            if self.gravity_acceleration > 5:
+                self.gravity_acceleration = 5
 
     def shoot(self):
         if self.shooting_log:
@@ -381,7 +375,6 @@ class Hero(Person):
         elif event.key == pygame.K_SPACE:
             self.rect.y += 1
             if pygame.sprite.spritecollideany(self, floor_sprites):
-                self.gravity_log = True
                 self.gravity_acceleration = -7
             self.rect.y -= 1
 
@@ -440,12 +433,9 @@ class UpEnemy(Person):
         if check_hero_down(self.rect.x + 25, self.rect.y + 70, hero_sprites):
             if self.bullet_spawn > 50:
                 self.bullet_spawn = 0
-                return DownBullet(self.rect.x + 5, self.rect.y + 60, 1)
+                return DownBullet(self.rect.x + 5, self.rect.y + 60, 5)
             else:
                 self.bullet_spawn += 1
         else:
             self.bullet_spawn = 50
         return None
-
-    def gravity(self, *args):
-        pass

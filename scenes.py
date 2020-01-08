@@ -14,10 +14,8 @@ class Menu:
         self.menu_but_sprites = pygame.sprite.Group()
         Button("continue", "continuebut.png", 336, 300, self.menu_but_sprites)
         Button("newgame", "newgamebut.png", 336, 360, self.menu_but_sprites)
-        Button("listlevels_", "levelsbut.png", 336, 420, self.menu_but_sprites)
+        Button("listlevs_", "levelsbut.png", 336, 420, self.menu_but_sprites)
         Button("quit", "quitbut.png", 336, 480, self.menu_but_sprites)
-        # Временно обозначено управление
-        Button("menu_", "upravlenie.png", 50, 50, self.menu_but_sprites)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
@@ -37,7 +35,7 @@ class Menu:
         return "menu"
 
 
-class Listlevels:
+class Listlevs:
     def __init__(self):
         self.menu_but_sprites = pygame.sprite.Group()
         Button("level_1", "level_1.png", 336, 300, self.menu_but_sprites)
@@ -60,7 +58,7 @@ class Listlevels:
                     pygame.display.flip()
                     time.sleep(0.001)
                 return i.name
-        return "Listlevels"
+        return "listlevs"
 
 
 class Level:
@@ -129,8 +127,6 @@ class Level:
     def gravity(self):
         if not self.pause:
             self.hero.gravity(self.floor_sprites, self.all_sprites)
-            for i in self.enemy_sprites:
-                i.gravity(self.floor_sprites)
 
             for i in self.bullet_sprites:
                 x = i.fly(self.all_sprites, self.hero_sprites)

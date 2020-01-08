@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from scenes import Menu, Listlevels, Level1, Level2
+from scenes import Menu, Listlevs, Level1, Level2
 from functions import load_image
 
 
@@ -17,7 +17,7 @@ screen = pygame.display.set_mode((972, 600))
 
 scenename = "menu_"
 oldscenname = scenename
-scenenames = ["newgame", "menu_", "menu", "listlevels_", "listlevels", "level_1", "level1", "level_2", "level2", "quit"]
+scenenames = ["newgame", "menu_", "menu", "listlevs_", "listlevs", "level_1", "level1", "level_2", "level2", "quit"]
 
 download_image = pygame.sprite.Sprite()
 download_image.image = load_image("download.png")
@@ -49,9 +49,9 @@ while True:
     elif scenename == "menu_":
         Scene = Menu()
         scenename= "menu"
-    elif scenename == "listlevels_":
-        Scene = Listlevels()
-        scenename= "listlevels"
+    elif scenename == "listlevs_":
+        Scene = Listlevs()
+        scenename= "listlevs"
     elif scenename == "newgame":
         # Сброс базы данных
         Scene = Level1("Level_1.txt")
@@ -82,7 +82,7 @@ while True:
         if scenename == "menu":
             if event.type == pygame.MOUSEBUTTONDOWN:
                 scenename = Scene.click(event.pos, screen)
-        elif scenename == "listlevels":
+        elif scenename == "listlevs":
             if event.type == pygame.MOUSEBUTTONDOWN:
                 scenename = Scene.click(event.pos, screen)
         elif scenename == "level1":
