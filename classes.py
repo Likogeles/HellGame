@@ -1,7 +1,7 @@
 import pygame
 import math
 
-from functions import load_image, check_block, check_hero, check_hero_down
+from functions import self_on_screen, load_image, check_block, check_hero, check_hero_down
 
 
 class HealthPoint(pygame.sprite.Sprite):
@@ -393,35 +393,36 @@ class BaseEnemy(Person):
         self.bullet_spawn = 1000
 
     def moving(self, floor_sprites, hero_sprites):
-        if self.oldrunningwasright:
-            if check_hero(self.rect.x - 25, self.rect.y + 10, True, hero_sprites):
-                if self.bullet_spawn > 50:
-                    self.bullet_spawn = 0
-                    return Bullet(self.rect.x + 50, self.rect.y + 10, True, 5, "bull_0.png")
+        if self_on_screen(self):
+            if self.oldrunningwasright:
+                if check_hero(self.rect.x - 25, self.rect.y + 10, True, hero_sprites):
+                    if self.bullet_spawn > 50:
+                        self.bullet_spawn = 0
+                        return Bullet(self.rect.x + 50, self.rect.y + 10, True, 5, "bull_0.png")
+                    else:
+                        self.bullet_spawn += 1
                 else:
-                    self.bullet_spawn += 1
+                    self.bullet_spawn = 1000
+                    if check_block(self.rect.x + 45, self.rect.y + 70, floor_sprites) and\
+                            not(check_block(self.rect.x + 45, self.rect.y + 20, floor_sprites)):
+                        self.rect.x += 1
+                    else:
+                        self.oldrunningwasright = False
             else:
-                self.bullet_spawn = 1000
-                if check_block(self.rect.x + 45, self.rect.y + 70, floor_sprites) and\
-                        not(check_block(self.rect.x + 45, self.rect.y + 20, floor_sprites)):
-                    self.rect.x += 1
+                if check_hero(self.rect.x - 25, self.rect.y + 10, False, hero_sprites):
+                    if self.bullet_spawn > 50:
+                        self.bullet_spawn = 0
+                        return Bullet(self.rect.x - 25, self.rect.y + 10, False, 5, "bull_0.png")
+                    else:
+                        self.bullet_spawn += 1
                 else:
-                    self.oldrunningwasright = False
-        else:
-            if check_hero(self.rect.x - 25, self.rect.y + 10, False, hero_sprites):
-                if self.bullet_spawn > 50:
-                    self.bullet_spawn = 0
-                    return Bullet(self.rect.x - 25, self.rect.y + 10, False, 5, "bull_0.png")
-                else:
-                    self.bullet_spawn += 1
-            else:
-                self.bullet_spawn = 1000
-                if check_block(self.rect.x - 10, self.rect.y + 70, floor_sprites) and\
-                        not (check_block(self.rect.x - 10, self.rect.y + 20, floor_sprites)):
-                    self.rect.x -= 1
-                else:
-                    self.oldrunningwasright = True
-        return None
+                    self.bullet_spawn = 1000
+                    if check_block(self.rect.x - 10, self.rect.y + 70, floor_sprites) and\
+                            not (check_block(self.rect.x - 10, self.rect.y + 20, floor_sprites)):
+                        self.rect.x -= 1
+                    else:
+                        self.oldrunningwasright = True
+            return None
 
 
 class UpEnemy(Person):
@@ -430,12 +431,13 @@ class UpEnemy(Person):
         self.bullet_spawn = 1000
 
     def moving(self, floor_sprites, hero_sprites):
-        if check_hero_down(self.rect.x + 25, self.rect.y + 70, hero_sprites):
-            if self.bullet_spawn > 50:
-                self.bullet_spawn = 0
-                return DownBullet(self.rect.x + 5, self.rect.y + 60, 5)
+        if self_on_screen(self):
+            if check_hero_down(self.rect.x + 25, self.rect.y + 70, hero_sprites):
+                if self.bullet_spawn > 50:
+                    self.bullet_spawn = 0
+                    return DownBullet(self.rect.x + 5, self.rect.y + 60, 5)
+                else:
+                    self.bullet_spawn += 1
             else:
-                self.bullet_spawn += 1
-        else:
-            self.bullet_spawn = 50
-        return None
+                self.bullet_spawn = 50
+            return None

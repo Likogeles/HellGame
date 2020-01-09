@@ -14,6 +14,12 @@ def load_image(name, colorkey=None):
     return image
 
 
+def self_on_screen(self):
+    if -100 <= self.rect.y <= 600 and -50 <= self.rect.x <= 972:
+        return True
+    return False
+
+
 def check_block(x, y, all_sprites):
     sprite = pygame.sprite.Sprite()
     sprite.image = load_image("Enemys/check_block.png")

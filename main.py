@@ -10,9 +10,6 @@ def terminate():
     sys.exit()
 
 
-# Смотреть предыдущий commit
-
-
 pygame.init()
 pygame.display.set_caption("Hell Game")
 screen = pygame.display.set_mode((972, 600))
