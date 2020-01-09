@@ -4,7 +4,7 @@ import time
 
 from classes import HealthPoint, BulletSliderSprite, Button
 from classes import Floor, Endlevel, Box
-from classes import Bullet, SinusBullet
+from classes import Bullet, SinusBullet, DownHeroBullet
 from classes import Hero, BaseEnemy, UpEnemy
 
 
@@ -81,6 +81,7 @@ class Level:
 
         self.bullet_0_slider = pygame.sprite.Group(BulletSliderSprite("bull_0_slider.png"))
         self.bullet_1_slider = pygame.sprite.Group(BulletSliderSprite("bull_1_slider.png"))
+        self.bullet_2_slider = pygame.sprite.Group(BulletSliderSprite("bull_2_slider.png"))
 
         filename = "data/LevelsLists/" + level_text
         with open(filename, 'r') as mapFile:
@@ -123,6 +124,8 @@ class Level:
             self.bullet_0_slider.draw(screen)
         elif self.hero.weapons_slide == 1:
             self.bullet_1_slider.draw(screen)
+        elif self.hero.weapons_slide == 2:
+            self.bullet_2_slider.draw(screen)
 
     def gravity(self):
         if not self.pause:
@@ -186,9 +189,7 @@ class Level1(Level):
         else:
             x = self.hero.eventin(event, self.floor_sprites, self.all_sprites)
             if x:
-                if type(x) == Bullet:
-                    self.bullet_sprites.add(x)
-                elif type(x) == SinusBullet:
+                if type(x) == Bullet or type(x) == SinusBullet or type(x) == DownHeroBullet:
                     self.bullet_sprites.add(x)
                 elif x == "level_2" or x == "menu_":
                     return x
@@ -224,9 +225,7 @@ class Level2(Level):
         else:
             x = self.hero.eventin(event, self.floor_sprites, self.all_sprites)
             if x:
-                if type(x) == Bullet:
-                    self.bullet_sprites.add(x)
-                elif type(x) == SinusBullet:
+                if type(x) == Bullet or type(x) == SinusBullet or type(x) == DownHeroBullet:
                     self.bullet_sprites.add(x)
                 elif x == "menu_":
                     return x

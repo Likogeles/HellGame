@@ -167,6 +167,33 @@ class DownBullet(Bullet):
                 return x.hp
 
 
+class DownHeroBullet(Bullet):
+    def __init__(self, x, y, speedx, speedy, move_on_right, *group):
+        super().__init__(x, y, False, speedy, "bull_2.png", *group)
+        self.image = load_image("Bullets/" + "bull_2.png", -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.movex = -speedx
+        if move_on_right:
+            self.movex = speedx
+        self.movey = -speedy
+
+    def fly(self, all_sprites, hero_sprites):
+        self.rect.x += self.movex
+        self.rect.y += self.movey
+        self.movey += 0.1
+        if not (self.rect.y <= 600) or not (-50 <= self.rect.x <= 972):
+            self.kill()
+        x = pygame.sprite.spritecollideany(self, all_sprites)
+        if x:
+            if type(x) == BaseEnemy or type(x) == Box:
+                x.get_hit(50)
+                self.kill()
+            elif type(x) == Floor:
+                self.kill()
+
+
 class Person(pygame.sprite.Sprite):
     def __init__(self, x, y, imgname, *group):
         super().__init__(*group)
@@ -321,12 +348,12 @@ class Hero(Person):
 
     def shoot(self):
         if self.shooting_log:
-            x = self.rect.x
-            if self.oldrunningwasright:
-                x += 50
-            else:
-                x -= 25
             if self.weapons_slide == 1:
+                x = self.rect.x
+                if self.oldrunningwasright:
+                    x += 50
+                else:
+                    x -= 25
                 return SinusBullet(x, self.rect.y + 35, self.oldrunningwasright, 10)
 
     def eventin(self, event, floor_sprites, all_sprites):
@@ -338,16 +365,24 @@ class Hero(Person):
                 elif event.key == pygame.K_j:
                     self.beginmove(event, floor_sprites)
                     x = self.rect.x
-                    if self.oldrunningwasright:
-                        x += 50
-                    else:
-                        x -= 25
                     if self.weapons_slide == 0:
+                        if self.oldrunningwasright:
+                            x += 50
+                        else:
+                            x -= 25
                         new_bullet = Bullet(x, self.rect.y + 10, self.oldrunningwasright, 10)
+                    elif self.weapons_slide == 2:
+                        if self.oldrunningwasright:
+                            x += 50
+                        else:
+                            x -= 50
+                        new_bullet = DownHeroBullet(x, self.rect.y + 10, 2, 2, self.oldrunningwasright)
                 elif event.key == pygame.K_i:
                     self.weapons_slide = 0
                 elif event.key == pygame.K_o:
                     self.weapons_slide = 1
+                elif event.key == pygame.K_k:
+                    self.weapons_slide = 2
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_j:
                     self.stopmove(event)
