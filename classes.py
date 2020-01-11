@@ -220,8 +220,9 @@ class Person(pygame.sprite.Sprite):
 
 
 class Npc(Person):
-    def __init__(self, x, y, *group):
+    def __init__(self, x, y, name, *group):
         super().__init__(x, y, "Npces/robot.png", *group)
+        self.name = name
 
     def moving(self, floor_sprites):
         if self_on_screen(self):

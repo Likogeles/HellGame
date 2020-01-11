@@ -39,15 +39,15 @@ def check_npc(x, y, move_right, npces_sprites):
     sprite.rect.x = x - 15
     x = pygame.sprite.spritecollideany(sprite, npces_sprites)
     if x:
-        return x.rect.x + 15, x.rect.y - 20
+        return x.rect.x + 15, x.rect.y - 20, x.name
     sprite.rect.x += 50
     x = pygame.sprite.spritecollideany(sprite, npces_sprites)
     if x:
-        return x.rect.x + 15, x.rect.y - 20
+        return x.rect.x + 15, x.rect.y - 20, x.name
     sprite.rect.x += 40
     x = pygame.sprite.spritecollideany(sprite, npces_sprites)
     if x:
-        return x.rect.x + 15, x.rect.y - 20
+        return x.rect.x + 15, x.rect.y - 20, x.name
 
 
 def check_hero(x, y, move_right, hero_sprites):

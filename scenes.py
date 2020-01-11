@@ -80,6 +80,8 @@ class Level:
         self.pause = False
         self.level_text = level_text[:-4].lower()
 
+        self.font = pygame.font.Font(None, 30)
+
         Button("continue", "continuebut.png", 336, 300, self.but_sprites)
         Button(self.level_text, "again.png", 336, 360, self.but_sprites)
         Button("menu_", "exittomenu.png", 336, 420, self.but_sprites)
@@ -110,7 +112,7 @@ class Level:
                 elif level[i][j] == "&":
                     self.all_sprites.add(UpEnemy(50 * j, 50 * i - 20, self.enemy_sprites))
                 elif level[i][j] == "N":
-                    self.all_sprites.add(Npc(50 * j, 50 * i - 20, self.npc_sprites))
+                    self.all_sprites.add(Npc(50 * j, 50 * i - 20, "АГТ2v512", self.npc_sprites))
                 elif level[i][j] == "+":
                     if level_text == "Level_1.txt":
                         Endlevel(50 * j, 50 * i - 50, "level_2", "level1.png", self.all_sprites)
@@ -125,6 +127,11 @@ class Level:
         self.herobut_sprites.draw(screen)
         for i in self.herobut_sprites:
             i.kill()
+
+        for i in self.npc_sprites:
+            x = self.hero.hero_check_npc(self.npc_sprites)
+            if x:
+                screen.blit(self.font.render(x[2], 1, (255, 255, 255)), (i.rect.x - 20, i.rect.y - 40))
 
         self.bullet_sprites.draw(screen)
 
@@ -191,6 +198,7 @@ class Level1(Level):
         x = self.hero.hero_check_npc(self.npc_sprites)
         if x:
             self.all_sprites.add(HeroBut(x[0], x[1], self.herobut_sprites))
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.pause = not self.pause
