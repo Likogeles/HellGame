@@ -2,10 +2,10 @@ import pygame
 import time
 
 
-from classes import HealthPoint, BulletSliderSprite, Button
+from classes import HealthPoint, BulletSliderSprite, Button, HeroBut
 from classes import Floor, Endlevel, Box
 from classes import Bullet, SinusBullet, DownHeroBullet
-from classes import Hero, BaseEnemy, UpEnemy
+from classes import Hero, Npc, BaseEnemy, UpEnemy
 
 
 class Menu:
@@ -41,7 +41,6 @@ class Listlevs:
         Button("level_1", "level_1.png", 336, 300, self.menu_but_sprites)
         Button("level_2", "level_2.png", 336, 360, self.menu_but_sprites)
         Button("menu_", "back.png", 336, 480, self.menu_but_sprites)
-        # Временно обозначено управление
 
     def render(self, screen):
         screen.fill((0, 0, 0))
@@ -64,13 +63,20 @@ class Listlevs:
 class Level:
     def __init__(self, level_text):
         self.hero_sprites = pygame.sprite.Group()
+        self.npc_sprites = pygame.sprite.Group()
+
         self.floor_sprites = pygame.sprite.Group()
         self.boxes_sprites = pygame.sprite.Group()
+
         self.enemy_sprites = pygame.sprite.Group()
         self.bullet_sprites = pygame.sprite.Group()
+
         self.hp_sprites = pygame.sprite.Group()
-        self.all_sprites = pygame.sprite.Group()
+        self.herobut_sprites = pygame.sprite.Group()
+
         self.but_sprites = pygame.sprite.Group()
+
+        self.all_sprites = pygame.sprite.Group()
         self.pause = False
         self.level_text = level_text[:-4].lower()
 
@@ -103,6 +109,8 @@ class Level:
                     self.all_sprites.add(BaseEnemy(50 * j, 50 * i - 20, self.enemy_sprites))
                 elif level[i][j] == "&":
                     self.all_sprites.add(UpEnemy(50 * j, 50 * i - 20, self.enemy_sprites))
+                elif level[i][j] == "N":
+                    self.all_sprites.add(Npc(50 * j, 50 * i - 20, self.npc_sprites))
                 elif level[i][j] == "+":
                     if level_text == "Level_1.txt":
                         Endlevel(50 * j, 50 * i - 50, "level_2", "level1.png", self.all_sprites)
@@ -112,9 +120,15 @@ class Level:
     def render(self, screen):
         screen.fill((0, 0, 0))
         self.all_sprites.draw(screen)
-        self.hero_sprites.draw(screen)
         self.hp_sprites.draw(screen)
+
+        self.herobut_sprites.draw(screen)
+        for i in self.herobut_sprites:
+            i.kill()
+
         self.bullet_sprites.draw(screen)
+
+        self.hero_sprites.draw(screen)
         if self.pause:
             pygame.mouse.set_visible(True)
             self.but_sprites.draw(screen)
@@ -136,9 +150,6 @@ class Level:
                 if type(x) == int:
                     if x <= 0:
                         return self.level_text
-            for i in range(self.hero.hp):
-                if i % 20 == 0:
-                    HealthPoint(i * 30 + 10, 10, self.hp_sprites)
 
             for i in self.hp_sprites:
                 i.kill()
@@ -153,6 +164,8 @@ class Level:
                 if new_bullet:
                     self.bullet_sprites.add(new_bullet)
                     self.all_sprites.add(new_bullet)
+            for i in self.npc_sprites:
+                i.moving(self.floor_sprites)
 
     def animateupdate(self):
         if not self.pause:
@@ -175,6 +188,9 @@ class Level1(Level):
         return "level1"
 
     def eventupdate(self, event):
+        x = self.hero.hero_check_npc(self.npc_sprites)
+        if x:
+            self.all_sprites.add(HeroBut(x[0], x[1], self.herobut_sprites))
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.pause = not self.pause
@@ -187,7 +203,7 @@ class Level1(Level):
                 else:
                     return x
         else:
-            x = self.hero.eventin(event, self.floor_sprites, self.all_sprites)
+            x = self.hero.eventin(event, self.floor_sprites, self.all_sprites, self.npc_sprites)
             if x:
                 if type(x) == Bullet or type(x) == SinusBullet or type(x) == DownHeroBullet:
                     self.bullet_sprites.add(x)
@@ -223,7 +239,7 @@ class Level2(Level):
                 else:
                     return x
         else:
-            x = self.hero.eventin(event, self.floor_sprites, self.all_sprites)
+            x = self.hero.eventin(event, self.floor_sprites, self.all_sprites, self.npc_sprites)
             if x:
                 if type(x) == Bullet or type(x) == SinusBullet or type(x) == DownHeroBullet:
                     self.bullet_sprites.add(x)

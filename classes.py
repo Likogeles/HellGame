@@ -1,7 +1,7 @@
 import pygame
 import math
 
-from functions import self_on_screen, load_image, check_block, check_hero, check_hero_down
+from functions import self_on_screen, load_image, check_block, check_npc, check_hero, check_hero_down
 
 
 class HealthPoint(pygame.sprite.Sprite):
@@ -28,6 +28,15 @@ class Button(pygame.sprite.Sprite):
                 self.rect.y <= pos[1] <= self.rect.y + self.h:
             return True
         return False
+
+
+class HeroBut(pygame.sprite.Sprite):
+    def __init__(self, x, y, *group):
+        super().__init__(*group)
+        self.image = load_image("Buttons/herobut_e.png")
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 
 class Floor(pygame.sprite.Sprite):
@@ -210,6 +219,26 @@ class Person(pygame.sprite.Sprite):
             self.kill()
 
 
+class Npc(Person):
+    def __init__(self, x, y, *group):
+        super().__init__(x, y, "Npces/robot.png", *group)
+
+    def moving(self, floor_sprites):
+        if self_on_screen(self):
+            if self.oldrunningwasright:
+                if check_block(self.rect.x + 45, self.rect.y + 70, floor_sprites) and\
+                        not(check_block(self.rect.x + 45, self.rect.y + 20, floor_sprites)):
+                    self.rect.x += 1
+                else:
+                    self.oldrunningwasright = False
+            else:
+                if check_block(self.rect.x - 10, self.rect.y + 70, floor_sprites) and\
+                        not (check_block(self.rect.x - 10, self.rect.y + 20, floor_sprites)):
+                    self.rect.x -= 1
+                else:
+                    self.oldrunningwasright = True
+
+
 class Hero(Person):
     def __init__(self, x, y, *group):
         super().__init__(x, y, "Hero/hero_0.png", *group)
@@ -356,11 +385,17 @@ class Hero(Person):
                     x -= 25
                 return SinusBullet(x, self.rect.y + 35, self.oldrunningwasright, 10)
 
-    def eventin(self, event, floor_sprites, all_sprites):
+    def hero_check_npc(self, npc_sprites):
+        return check_npc(self.rect.x, self.rect.y, self.oldrunningwasright, npc_sprites)
+
+    def eventin(self, event, floor_sprites, all_sprites, npc_sprites):
         if self.hp > 0:
             new_bullet = None
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_SPACE:
+                if event.key == pygame.K_e:
+                    if check_npc(self.rect.x, self.rect.y, self.oldrunningwasright, npc_sprites):
+                        print(1)
+                elif event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_SPACE:
                     self.beginmove(event, floor_sprites)
                 elif event.key == pygame.K_j:
                     self.beginmove(event, floor_sprites)
