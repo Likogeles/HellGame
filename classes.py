@@ -84,6 +84,15 @@ class Endlevel(pygame.sprite.Sprite):
         self.nextlevel = name_of_next_level
 
 
+class Dialog_window(pygame.sprite.Sprite):
+    def __init__(self, *group):
+        super().__init__(*group)
+        self.image = load_image("dialog_window.png", -1)
+        self.rect = self.image.get_rect()
+        self.rect.x = 86
+        self.rect.y = 299
+
+
 class BulletSliderSprite(pygame.sprite.Sprite):
     def __init__(self, imgname, *group):
         super().__init__(*group)
@@ -387,15 +396,16 @@ class Hero(Person):
                 return SinusBullet(x, self.rect.y + 35, self.oldrunningwasright, 10)
 
     def hero_check_npc(self, npc_sprites):
-        return check_npc(self.rect.x, self.rect.y, self.oldrunningwasright, npc_sprites)
+        return check_npc(self.rect.x, self.rect.y, npc_sprites)
 
     def eventin(self, event, floor_sprites, all_sprites, npc_sprites):
         if self.hp > 0:
             new_bullet = None
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
-                    if check_npc(self.rect.x, self.rect.y, self.oldrunningwasright, npc_sprites):
-                        print(1)
+                    x = check_npc(self.rect.x, self.rect.y, npc_sprites)
+                    if check_npc(self.rect.x, self.rect.y, npc_sprites):
+                        return "dialogwindow" + x[2]
                 elif event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_SPACE:
                     self.beginmove(event, floor_sprites)
                 elif event.key == pygame.K_j:
@@ -455,6 +465,11 @@ class Hero(Person):
         elif event.key == pygame.K_a:
             self.left_move = False
         elif event.key == pygame.K_j:
+            self.shooting_log = False
+
+    def stop_all_move(self):
+            self.right_move = False
+            self.left_move = False
             self.shooting_log = False
 
 

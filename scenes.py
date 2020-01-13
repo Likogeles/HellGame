@@ -2,7 +2,7 @@ import pygame
 import time
 
 
-from classes import HealthPoint, BulletSliderSprite, Button, HeroBut
+from classes import HealthPoint, BulletSliderSprite, Button, HeroBut, Dialog_window
 from classes import Floor, Endlevel, Box
 from classes import Bullet, SinusBullet, DownHeroBullet
 from classes import Hero, Npc, BaseEnemy, UpEnemy
@@ -81,6 +81,9 @@ class Level:
         self.level_text = level_text[:-4].lower()
 
         self.font = pygame.font.Font(None, 30)
+        self.dialog_font = pygame.font.Font(None, 65)
+        self.dialog_sprites = pygame.sprite.Group()
+        self.dialog_sprites.add(Dialog_window())
 
         Button("continue", "continuebut.png", 336, 300, self.but_sprites)
         Button(self.level_text, "again.png", 336, 360, self.but_sprites)
@@ -124,9 +127,11 @@ class Level:
         self.all_sprites.draw(screen)
         self.hp_sprites.draw(screen)
 
+        x = self.hero.hero_check_npc(self.npc_sprites)
+        if x:
+            HeroBut(x[0], x[1], self.herobut_sprites)
         self.herobut_sprites.draw(screen)
-        for i in self.herobut_sprites:
-            i.kill()
+        self.herobut_sprites = pygame.sprite.Group()
 
         for i in self.npc_sprites:
             x = self.hero.hero_check_npc(self.npc_sprites)
@@ -194,10 +199,7 @@ class Level1(Level):
                 return i.name
         return "level1"
 
-    def eventupdate(self, event):
-        x = self.hero.hero_check_npc(self.npc_sprites)
-        if x:
-            self.all_sprites.add(HeroBut(x[0], x[1], self.herobut_sprites))
+    def eventupdate(self, event, screen):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -217,6 +219,15 @@ class Level1(Level):
                     self.bullet_sprites.add(x)
                 elif x == "level_2" or x == "menu_":
                     return x
+                elif x[:12] == "dialogwindow":
+                    self.hero.stop_all_move()
+                    self.render(screen)
+                    self.dialog_sprites.draw(screen)
+                    screen.blit(self.dialog_font.render(x[12:], 1, (0, 0, 0)), (115, 400))
+                    screen.blit(self.dialog_font.render("bla bla bla", 1, (0, 0, 0)), (120, 470))
+
+                    pygame.display.flip()
+                    time.sleep(2)
 
 
 class Level2(Level):

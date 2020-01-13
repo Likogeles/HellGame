@@ -31,7 +31,7 @@ def check_block(x, y, all_sprites):
     return False
 
 
-def check_npc(x, y, move_right, npces_sprites):
+def check_npc(x, y, npces_sprites):
     sprite = pygame.sprite.Sprite()
     sprite.image = load_image("Enemys/check_block.png")
     sprite.rect = sprite.image.get_rect()

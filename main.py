@@ -86,7 +86,7 @@ while True:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 scenename = Scene.click(event.pos, screen)
         elif scenename == "level1":
-            x = Scene.eventupdate(event)
+            x = Scene.eventupdate(event, screen)
             if x:
                 scenename = x
         elif scenename == "level2":
