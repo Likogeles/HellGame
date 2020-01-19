@@ -12,6 +12,9 @@ from dialogues import dialog_with_AGT
 
 class Menu:
     def __init__(self):
+        pygame.mixer.music.load("data/Music/themesound.mp3")
+        pygame.mixer.music.play()
+
         pygame.mouse.set_visible(True)
         self.menu_but_sprites = pygame.sprite.Group()
         if check_continue():
@@ -44,6 +47,11 @@ class Listlevs:
         Button("level_1", "level_1.png", 336, 300, self.menu_but_sprites)
         Button("level_2", "level_2.png", 336, 360, self.menu_but_sprites)
         Button("menu_", "back.png", 336, 480, self.menu_but_sprites)
+        pygame.mixer.music.load("data/Music/themesound.mp3")
+        pygame.mixer.music.play()
+
+        pygame.mixer.music.play()
+        pygame.mixer.music.set_volume(0.1)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
@@ -259,6 +267,8 @@ class Level2(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
         saving_location(2)
+        pygame.mixer.music.load("data/Music/level2.mp3")
+        pygame.mixer.music.play()
 
         filename = "data/LevelsLists/" + level_text
         with open(filename, 'r') as mapFile:

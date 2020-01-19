@@ -5,9 +5,12 @@ from functions import load_image, terminate, check_location, new_game_save
 
 
 pygame.init()
+pygame.mixer.init()
 pygame.display.set_caption("Hell Game")
 screen = pygame.display.set_mode((972, 600))
 
+pygame.mixer.music.load("data/Music/themesound.mp3")
+pygame.mixer.music.set_volume(0.1)
 
 scenename = "menu_"
 oldscenname = scenename

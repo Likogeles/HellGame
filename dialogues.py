@@ -32,5 +32,7 @@ def dialog_with_AGT(self, screen, x):
         screen.blit(self.dialog_font.render("общей безопасности.", 1, (0, 0, 0)), (110, 505))
         pygame.display.flip()
         click_wait()
+    else:
+        print("Этого диалога ещё нет")
 
     pygame.mouse.set_visible(False)

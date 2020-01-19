@@ -5,6 +5,7 @@ import sys
 
 
 def terminate():
+    pygame.mixer.quit()
     pygame.quit()
     sys.exit()
 
