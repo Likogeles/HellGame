@@ -122,6 +122,16 @@ def check_location():
     return num[0][0]
 
 
+def saving_plot(plot):
+    con = sqlite3.connect("save.db")
+    cur = con.cursor()
+    cur.execute("""
+                UPDATE Save
+                SET plot = {}""".format(plot)).fetchall()
+    con.commit()
+    con.close()
+
+
 def check_plot():
     con = sqlite3.connect("save.db")
     cur = con.cursor()
@@ -147,6 +157,29 @@ def check_saves_guns():
     cur = con.cursor()
     num = cur.execute("""
         SELECT guns FROM Save """).fetchall()
+    con.commit()
+    con.close()
+    return num[0][0]
+
+
+def new_game_save():
+    con = sqlite3.connect("save.db")
+    cur = con.cursor()
+    cur.execute("""
+                UPDATE Save
+                SET continue = 1""").fetchall()
+    con.commit()
+    con.close()
+    saving_plot(0)
+    saving_guns(0)
+    saving_location(1)
+
+
+def check_continue():
+    con = sqlite3.connect("save.db")
+    cur = con.cursor()
+    num = cur.execute("""
+        SELECT continue FROM Save """).fetchall()
     con.commit()
     con.close()
     return num[0][0]

@@ -1,7 +1,7 @@
 import pygame
 
 from scenes import Menu, Listlevs, Level1, Level2
-from functions import load_image, terminate, check_location
+from functions import load_image, terminate, check_location, new_game_save
 
 
 pygame.init()
@@ -47,7 +47,7 @@ while True:
         Scene = Listlevs()
         scenename= "listlevs"
     elif scenename == "newgame":
-        # Сброс базы данных
+        new_game_save()
         Scene = Level1("Level_1.txt")
         scenename = "level1"
     elif scenename == "continue":
