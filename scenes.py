@@ -6,6 +6,8 @@ from classes import HealthPoint, BulletSliderSprite, Button, HeroBut, Dialog_win
 from classes import Floor, Endlevel, Box
 from classes import Bullet, SinusBullet, DownHeroBullet
 from classes import Hero, Npc, BaseEnemy, UpEnemy
+from functions import saving_location
+from dialogues import dialog_with_AGT
 
 
 class Menu:
@@ -81,7 +83,8 @@ class Level:
         self.level_text = level_text[:-4].lower()
 
         self.font = pygame.font.Font(None, 30)
-        self.dialog_font = pygame.font.Font(None, 65)
+        self.dialog_namefont = pygame.font.Font(None, 65)
+        self.dialog_font = pygame.font.Font(None, 30)
         self.dialog_sprites = pygame.sprite.Group()
         self.dialog_sprites.add(Dialog_window())
 
@@ -187,6 +190,7 @@ class Level:
 class Level1(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
+        saving_location(1)
 
     def hero_shoot(self):
         x = self.hero.shoot()
@@ -222,17 +226,14 @@ class Level1(Level):
                 elif x[:12] == "dialogwindow":
                     self.hero.stop_all_move()
                     self.render(screen)
-                    self.dialog_sprites.draw(screen)
-                    screen.blit(self.dialog_font.render(x[12:], 1, (0, 0, 0)), (115, 400))
-                    screen.blit(self.dialog_font.render("bla bla bla", 1, (0, 0, 0)), (120, 470))
-
-                    pygame.display.flip()
-                    time.sleep(2)
+                    if x[12:] == "АГТ2v512":
+                        dialog_with_AGT(self, screen, x)
 
 
 class Level2(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
+        saving_location(2)
 
     def hero_shoot(self):
         x = self.hero.shoot()

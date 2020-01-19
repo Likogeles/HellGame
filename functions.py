@@ -1,5 +1,23 @@
 import pygame
 import os
+import sqlite3
+import sys
+
+
+def terminate():
+    pygame.quit()
+    sys.exit()
+
+
+def click_wait():
+    click = True
+    while click:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = False
 
 
 def load_image(name, colorkey=None):
@@ -82,3 +100,53 @@ def check_hero_down(x, y, hero_sprites):
             return True
     sprite.kill()
     return False
+
+
+def saving_location(location):
+    con = sqlite3.connect("save.db")
+    cur = con.cursor()
+    cur.execute("""
+                UPDATE Save
+                SET location = {}""".format(location)).fetchall()
+    con.commit()
+    con.close()
+
+
+def check_location():
+    con = sqlite3.connect("save.db")
+    cur = con.cursor()
+    num = cur.execute("""
+        SELECT location FROM Save """).fetchall()
+    con.commit()
+    con.close()
+    return num[0][0]
+
+
+def check_plot():
+    con = sqlite3.connect("save.db")
+    cur = con.cursor()
+    num = cur.execute("""
+        SELECT plot FROM Save """).fetchall()
+    con.commit()
+    con.close()
+    return num[0][0]
+
+
+def saving_guns(guns):
+    con = sqlite3.connect("save.db")
+    cur = con.cursor()
+    cur.execute("""
+                UPDATE Save
+                SET guns = {}""".format(guns)).fetchall()
+    con.commit()
+    con.close()
+
+
+def check_saves_guns():
+    con = sqlite3.connect("save.db")
+    cur = con.cursor()
+    num = cur.execute("""
+        SELECT guns FROM Save """).fetchall()
+    con.commit()
+    con.close()
+    return num[0][0]

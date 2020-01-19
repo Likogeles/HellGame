@@ -1,13 +1,7 @@
 import pygame
-import sys
 
 from scenes import Menu, Listlevs, Level1, Level2
-from functions import load_image
-
-
-def terminate():
-    pygame.quit()
-    sys.exit()
+from functions import load_image, terminate, check_location
 
 
 pygame.init()
@@ -17,7 +11,7 @@ screen = pygame.display.set_mode((972, 600))
 
 scenename = "menu_"
 oldscenname = scenename
-scenenames = ["newgame", "menu_", "menu", "listlevs_", "listlevs", "level_1", "level1", "level_2", "level2", "quit"]
+scenenames = ["newgame", "menu_", "menu", "continue", "listlevs_", "listlevs", "level_1", "level1", "level_2", "level2", "quit"]
 
 download_image = pygame.sprite.Sprite()
 download_image.image = load_image("download.png")
@@ -56,6 +50,13 @@ while True:
         # Сброс базы данных
         Scene = Level1("Level_1.txt")
         scenename = "level1"
+    elif scenename == "continue":
+        if check_location() == 1:
+            Scene = Level1("Level_1.txt")
+            scenename = "level1"
+        if check_location() == 2:
+            Scene = Level2("Level_2.txt")
+            scenename = "level2"
     elif scenename == "level_1":
         Scene = Level1("Level_1.txt")
         scenename = "level1"

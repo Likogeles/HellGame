@@ -1,7 +1,7 @@
 import pygame
 import math
 
-from functions import self_on_screen, load_image, check_block, check_npc, check_hero, check_hero_down
+from functions import load_image, self_on_screen, check_block, check_npc, check_hero, check_hero_down, check_saves_guns
 
 
 class HealthPoint(pygame.sprite.Sprite):
@@ -90,7 +90,7 @@ class Dialog_window(pygame.sprite.Sprite):
         self.image = load_image("dialog_window.png", -1)
         self.rect = self.image.get_rect()
         self.rect.x = 86
-        self.rect.y = 299
+        self.rect.y = 270
 
 
 class BulletSliderSprite(pygame.sprite.Sprite):
@@ -426,9 +426,11 @@ class Hero(Person):
                 elif event.key == pygame.K_i:
                     self.weapons_slide = 0
                 elif event.key == pygame.K_o:
-                    self.weapons_slide = 1
+                    if check_saves_guns() >= 1:
+                        self.weapons_slide = 1
                 elif event.key == pygame.K_k:
-                    self.weapons_slide = 2
+                    if check_saves_guns() >= 2:
+                        self.weapons_slide = 2
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_j:
                     self.stopmove(event)
