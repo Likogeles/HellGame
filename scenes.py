@@ -19,8 +19,8 @@ class Menu:
         sprite = pygame.sprite.Sprite()
         sprite.image = load_image("control.png")
         sprite.rect = sprite.image.get_rect()
-        sprite.rect.x = 750
-        sprite.rect.y = 400
+        sprite.rect.x = 30
+        sprite.rect.y = 350
         self.all_sprites.add(sprite)
 
         theme = pygame.sprite.Sprite()
@@ -49,8 +49,7 @@ class Menu:
                 while i.rect.x < 970:
                     for j in self.menu_but_sprites:
                         j.rect.x += 10
-                    scr.fill((0, 0, 0))
-                    self.menu_but_sprites.draw(scr)
+                    self.render(scr)
                     pygame.display.flip()
                     time.sleep(0.001)
                 return i.name
