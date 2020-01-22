@@ -190,6 +190,47 @@ class Level:
             for i in self.enemy_sprites:
                 i.animate()
 
+    def eventupdate(self, event, screen):
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                self.pause = not self.pause
+
+        if self.pause:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x = self.click(event.pos)
+                if x == "continue":
+                    self.pause = not self.pause
+                else:
+                    return x
+        else:
+            x = self.hero.eventin(event, self.floor_sprites, self.all_sprites, self.npc_sprites)
+            if x:
+                if type(x) == Bullet or type(x) == SinusBullet or type(x) == DownHeroBullet:
+                    self.bullet_sprites.add(x)
+                elif x == "level_1" or x == "level_2" or x == "menu_":
+                    return x
+                elif x[:12] == "dialogwindow":
+                    self.hero.stop_all_move()
+                    self.render(screen)
+                    y = None
+                    if x[12:] == "АГТ2v512":
+                        y = dialog_with_AGT(self, screen, x)
+                    elif x[12:] == "ИЛД1v108":
+                        y = dialog_with_ILD(self, screen, x)
+                    if y:
+                        return y
+
+    def hero_shoot(self):
+        x = self.hero.shoot()
+        if x:
+            self.bullet_sprites.add(x)
+
+    def click(self, pos):
+        for i in self.but_sprites:
+            if i.click(pos):
+                return i.name
+        return ''.join(self.level_text.split("_"))
 
 class Level1(Level):
     def __init__(self, level_text):
@@ -232,48 +273,6 @@ class Level1(Level):
                         Endlevel(50 * j, 50 * i - 50, "level_5", "level1.png", self.all_sprites)
                     num_of_level += 1
 
-    def hero_shoot(self):
-        x = self.hero.shoot()
-        if x:
-            self.bullet_sprites.add(x)
-
-    def click(self, pos):
-        for i in self.but_sprites:
-            if i.click(pos):
-                return i.name
-        return "level1"
-
-    def eventupdate(self, event, screen):
-
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                self.pause = not self.pause
-
-        if self.pause:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                x = self.click(event.pos)
-                if x == "continue":
-                    self.pause = not self.pause
-                else:
-                    return x
-        else:
-            x = self.hero.eventin(event, self.floor_sprites, self.all_sprites, self.npc_sprites)
-            if x:
-                if type(x) == Bullet or type(x) == SinusBullet or type(x) == DownHeroBullet:
-                    self.bullet_sprites.add(x)
-                elif x == "level_2" or x == "menu_":
-                    return x
-                elif x[:12] == "dialogwindow":
-                    self.hero.stop_all_move()
-                    self.render(screen)
-                    y = None
-                    if x[12:] == "АГТ2v512":
-                        y = dialog_with_AGT(self, screen, x)
-                    elif x[12:] == "ИЛД1v108":
-                        y = dialog_with_ILD(self, screen, x)
-                    if y:
-                        return y
-
 
 class Level2(Level):
     def __init__(self, level_text):
@@ -297,41 +296,3 @@ class Level2(Level):
                         self.all_sprites.add(Npc(50 * j, 50 * i - 20, "ИЛД1v108", self.npc_sprites))
                 elif level[i][j] == "+":
                     Endlevel(50 * j, 50 * i - 50, "level_1", "level1.png", self.all_sprites)
-
-    def hero_shoot(self):
-        x = self.hero.shoot()
-        if x:
-            self.bullet_sprites.add(x)
-
-    def click(self, pos):
-        for i in self.but_sprites:
-            if i.click(pos):
-                return i.name
-        return "level1"
-
-    def eventupdate(self, event, screen):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                self.pause = not self.pause
-
-        if self.pause:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                x = self.click(event.pos)
-                if x == "continue":
-                    self.pause = not self.pause
-                else:
-                    return x
-        else:
-            x = self.hero.eventin(event, self.floor_sprites, self.all_sprites, self.npc_sprites)
-            if x:
-                if type(x) == Bullet or type(x) == SinusBullet or type(x) == DownHeroBullet:
-                    self.bullet_sprites.add(x)
-                elif x == "menu_" or x == "level_1":
-                    return x
-                elif x[:12] == "dialogwindow":
-                    self.hero.stop_all_move()
-                    self.render(screen)
-                    if x[12:] == "ИЛД1v108":
-                        x = dialog_with_ILD(self, screen, x)
-                        if x == "level_1":
-                            return x

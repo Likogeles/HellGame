@@ -53,7 +53,7 @@ def dialog_with_ILD(self, screen, x):
         screen.blit(self.dialog_namefont.render(x[12:], 1, (0, 0, 0)), (115, 370))
         screen.blit(self.dialog_font.render("Рад приветствовать вас, Робот-Наёмник РН-42.", 1, (0, 0, 0)),
                     (110, 430))
-        screen.blit(self.dialog_font.render("Скорее возвращаемя на главную площадь!", 1, (0, 0, 0)),
+        screen.blit(self.dialog_font.render("Скорее возвращаемcя на главную площадь!", 1, (0, 0, 0)),
                     (110, 455))
         pygame.display.flip()
         click_wait()
