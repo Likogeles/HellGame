@@ -479,20 +479,41 @@ class BaseEnemy(Person):
     def __init__(self, x, y, *group):
         super().__init__(x, y, "Enemys/Enemy_base.png", *group)
         self.bullet_spawn = 1000
+        self.t = 0
+        self.running_right = []
+        for i in range(8):
+            self.running_right.append(
+                pygame.transform.scale(load_image("Enemys/Enemy_base_" + str(i) + ".png", -1), (50, 90)))
+        self.running_left = []
+        for i in range(8):
+            x = pygame.transform.scale(load_image("Enemys/Enemy_base_" + str(i) + ".png", -1), (50, 90))
+            self.running_left.append(pygame.transform.flip(x, True, False))
+
+    def animate(self):
+        if self.oldrunningwasright:
+            self.image = self.running_right[self.t]
+            self.t += 1
+            if self.t > 7:
+                self.t = 0
+        else:
+            self.image = self.running_left[self.t]
+            self.t += 1
+            if self.t > 7:
+                self.t = 0
 
     def moving(self, floor_sprites, hero_sprites):
         if self_on_screen(self):
             if self.oldrunningwasright:
-                if check_hero(self.rect.x - 25, self.rect.y + 10, True, hero_sprites):
+                if check_hero(self.rect.x + 50, self.rect.y + 10, True, hero_sprites):
                     if self.bullet_spawn > 50:
                         self.bullet_spawn = 0
-                        return Bullet(self.rect.x + 50, self.rect.y + 10, True, 5, "bull_0.png")
+                        return Bullet(self.rect.x + 50, self.rect.y + 25, True, 2, "bull_0.png")
                     else:
                         self.bullet_spawn += 1
                 else:
-                    self.bullet_spawn = 1000
-                    if check_block(self.rect.x + 45, self.rect.y + 70, floor_sprites) and\
-                            not(check_block(self.rect.x + 45, self.rect.y + 20, floor_sprites)):
+                    self.bullet_spawn = 50
+                    if check_block(self.rect.x + 45, self.rect.y + 100, floor_sprites) and\
+                            not(check_block(self.rect.x + 45, self.rect.y + 50, floor_sprites)):
                         self.rect.x += 1
                     else:
                         self.oldrunningwasright = False
@@ -500,13 +521,13 @@ class BaseEnemy(Person):
                 if check_hero(self.rect.x - 25, self.rect.y + 10, False, hero_sprites):
                     if self.bullet_spawn > 50:
                         self.bullet_spawn = 0
-                        return Bullet(self.rect.x - 25, self.rect.y + 10, False, 5, "bull_0.png")
+                        return Bullet(self.rect.x - 25, self.rect.y + 25, False, 2, "bull_0.png")
                     else:
                         self.bullet_spawn += 1
                 else:
-                    self.bullet_spawn = 1000
-                    if check_block(self.rect.x - 10, self.rect.y + 70, floor_sprites) and\
-                            not (check_block(self.rect.x - 10, self.rect.y + 20, floor_sprites)):
+                    self.bullet_spawn = 50
+                    if check_block(self.rect.x - 10, self.rect.y + 100, floor_sprites) and\
+                            not (check_block(self.rect.x - 10, self.rect.y + 50, floor_sprites)):
                         self.rect.x -= 1
                     else:
                         self.oldrunningwasright = True
@@ -517,6 +538,9 @@ class UpEnemy(Person):
     def __init__(self, x, y, *group):
         super().__init__(x, y, "Enemys/Enemy_up.png", *group)
         self.bullet_spawn = 1000
+
+    def animate(self):
+        pass
 
     def moving(self, floor_sprites, hero_sprites):
         if self_on_screen(self):

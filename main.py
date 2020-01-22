@@ -35,6 +35,8 @@ MOVINGEVENT = 29
 pygame.time.set_timer(MOVINGEVENT, 20)
 SHOOTINGEVENT = 28
 pygame.time.set_timer(SHOOTINGEVENT, 50)
+ENEMYANIMATEEVENT = 27
+pygame.time.set_timer(ENEMYANIMATEEVENT, 200)
 
 while True:
     if scenename != oldscenname:
@@ -78,6 +80,8 @@ while True:
                     scenename = x
             elif event.type == ANIMATEEVENT:
                 Scene.animateupdate()
+            elif event.type == ENEMYANIMATEEVENT:
+                Scene.enemyanimateupdate()
             elif event.type == MOVINGEVENT:
                 Scene.movingupdate()
             elif event.type == SHOOTINGEVENT:

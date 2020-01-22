@@ -121,7 +121,7 @@ class Level:
                 elif level[i][j] == "@":
                     self.hero = Hero(50 * j, 50 * i - 40, self.hero_sprites)
                 elif level[i][j] == "#":
-                    self.all_sprites.add(BaseEnemy(50 * j, 50 * i - 20, self.enemy_sprites))
+                    self.all_sprites.add(BaseEnemy(50 * j, 50 * i - 40, self.enemy_sprites))
                 elif level[i][j] == "&":
                     self.all_sprites.add(UpEnemy(50 * j, 50 * i - 20, self.enemy_sprites))
 
@@ -185,11 +185,20 @@ class Level:
         if not self.pause:
             self.hero.animate()
 
+    def enemyanimateupdate(self):
+        if not self.pause:
+            for i in self.enemy_sprites:
+                i.animate()
+
 
 class Level1(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
         saving_location(1)
+        # pygame.mixer.music.load("data/Music/level2.mp3")
+        # print(pygame.mixer.music.get_pos)
+        # pygame.mixer.music.set_pos()
+        # pygame.mixer.music.play()
 
         filename = "data/LevelsLists/" + level_text
         with open(filename, 'r') as mapFile:
