@@ -20,7 +20,7 @@ class Menu:
         sprite.image = load_image("control.png")
         sprite.rect = sprite.image.get_rect()
         sprite.rect.x = 30
-        sprite.rect.y = 350
+        sprite.rect.y = 300
         self.all_sprites.add(sprite)
 
         theme = pygame.sprite.Sprite()
