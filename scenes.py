@@ -7,7 +7,7 @@ from classes import Floor, Endlevel, Box
 from classes import Bullet, SinusBullet, DownHeroBullet
 from classes import Hero, Npc, BaseEnemy, UpEnemy
 from functions import saving_location, check_continue, check_plot
-from dialogues import dialog_with_AGT
+from dialogues import dialog_with_AGT, dialog_with_ILD
 
 
 class Menu:
@@ -195,10 +195,8 @@ class Level1(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
         saving_location(1)
-        # pygame.mixer.music.load("data/Music/level2.mp3")
-        # print(pygame.mixer.music.get_pos)
-        # pygame.mixer.music.set_pos()
-        # pygame.mixer.music.play()
+        pygame.mixer.music.load("data/Music/themesound.mp3")
+        pygame.mixer.music.play()
 
         filename = "data/LevelsLists/" + level_text
         with open(filename, 'r') as mapFile:
@@ -268,8 +266,13 @@ class Level1(Level):
                 elif x[:12] == "dialogwindow":
                     self.hero.stop_all_move()
                     self.render(screen)
+                    y = None
                     if x[12:] == "АГТ2v512":
-                        dialog_with_AGT(self, screen, x)
+                        y = dialog_with_AGT(self, screen, x)
+                    elif x[12:] == "ИЛД1v108":
+                        y = dialog_with_ILD(self, screen, x)
+                    if y:
+                        return y
 
 
 class Level2(Level):
@@ -290,7 +293,8 @@ class Level2(Level):
                 if level[i][j] == "=":
                     self.all_sprites.add(Floor(50 * j, 50 * i, "floor.png", self.floor_sprites))
                 elif level[i][j] == "N":
-                    self.all_sprites.add(Npc(50 * j, 50 * i - 20, "ИЛД1v108", self.npc_sprites))
+                    if check_plot() == 0:
+                        self.all_sprites.add(Npc(50 * j, 50 * i - 20, "ИЛД1v108", self.npc_sprites))
                 elif level[i][j] == "+":
                     Endlevel(50 * j, 50 * i - 50, "level_1", "level1.png", self.all_sprites)
 
@@ -305,7 +309,7 @@ class Level2(Level):
                 return i.name
         return "level1"
 
-    def eventupdate(self, event):
+    def eventupdate(self, event, screen):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 self.pause = not self.pause
@@ -324,3 +328,10 @@ class Level2(Level):
                     self.bullet_sprites.add(x)
                 elif x == "menu_" or x == "level_1":
                     return x
+                elif x[:12] == "dialogwindow":
+                    self.hero.stop_all_move()
+                    self.render(screen)
+                    if x[12:] == "ИЛД1v108":
+                        x = dialog_with_ILD(self, screen, x)
+                        if x == "level_1":
+                            return x

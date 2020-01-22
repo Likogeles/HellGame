@@ -98,7 +98,7 @@ while True:
             if x:
                 scenename = x
         elif scenename == "level2":
-            x = Scene.eventupdate(event)
+            x = Scene.eventupdate(event, screen)
             if x:
                 scenename = x
         if scenename not in scenenames:
