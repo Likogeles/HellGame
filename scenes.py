@@ -6,7 +6,7 @@ from classes import HealthPoint, BulletSliderSprite, Button, HeroBut, Dialog_win
 from classes import Floor, Endlevel, Box
 from classes import Bullet, SinusBullet, DownHeroBullet
 from classes import Hero, Npc, BaseEnemy, UpEnemy
-from functions import saving_location, check_continue, check_plot
+from functions import load_image, saving_location, check_continue, check_plot
 from dialogues import dialog_with_AGT, dialog_with_ILD
 
 
@@ -14,6 +14,21 @@ class Menu:
     def __init__(self):
         pygame.mixer.music.load("data/Music/themesound.mp3")
         pygame.mixer.music.play()
+        self.all_sprites = pygame.sprite.Group()
+
+        sprite = pygame.sprite.Sprite()
+        sprite.image = load_image("control.png")
+        sprite.rect = sprite.image.get_rect()
+        sprite.rect.x = 750
+        sprite.rect.y = 400
+        self.all_sprites.add(sprite)
+
+        theme = pygame.sprite.Sprite()
+        theme.image = load_image("maintheme.png")
+        theme.rect = theme.image.get_rect()
+        theme.rect.x = 186
+        theme.rect.y = 20
+        self.all_sprites.add(theme)
 
         pygame.mouse.set_visible(True)
         self.menu_but_sprites = pygame.sprite.Group()
@@ -26,6 +41,7 @@ class Menu:
     def render(self, screen):
         screen.fill((0, 0, 0))
         self.menu_but_sprites.draw(screen)
+        self.all_sprites.draw(screen)
 
     def click(self, pos, scr):
         for i in self.menu_but_sprites:
@@ -231,6 +247,7 @@ class Level:
             if i.click(pos):
                 return i.name
         return ''.join(self.level_text.split("_"))
+
 
 class Level1(Level):
     def __init__(self, level_text):
