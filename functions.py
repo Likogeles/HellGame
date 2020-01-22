@@ -172,7 +172,7 @@ def new_game_save():
     con.commit()
     con.close()
     saving_plot(0)
-    saving_guns(0)
+    # saving_guns(0)
     saving_location(1)
 
 
