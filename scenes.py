@@ -33,14 +33,13 @@ class Menu:
         pygame.mouse.set_visible(True)
         self.menu_but_sprites = pygame.sprite.Group()
         if check_continue():
-            Button("continue", "continuebut.png", 336, 300, self.menu_but_sprites)
-        Button("newgame", "newgamebut.png", 336, 360, self.menu_but_sprites)
-        Button("listlevs_", "levelsbut.png", 336, 420, self.menu_but_sprites)
-        Button("quit", "quitbut.png", 336, 480, self.menu_but_sprites)
+            Button("continue", "continuebut.png", 336, 300, self.menu_but_sprites, self.all_sprites)
+        Button("newgame", "newgamebut.png", 336, 360, self.menu_but_sprites, self.all_sprites)
+        Button("listlevs_", "levelsbut.png", 336, 420, self.menu_but_sprites, self.all_sprites)
+        Button("quit", "quitbut.png", 336, 480, self.menu_but_sprites, self.all_sprites)
 
     def render(self, screen):
         screen.fill((0, 0, 0))
-        self.menu_but_sprites.draw(screen)
         self.all_sprites.draw(screen)
 
     def click(self, pos, scr):
@@ -48,7 +47,7 @@ class Menu:
             if i.click(pos):
                 while i.rect.x < 970:
                     for j in self.menu_but_sprites:
-                        j.rect.x += 10
+                        j.rect.x += 15
                     self.render(scr)
                     pygame.display.flip()
                     time.sleep(0.001)
@@ -78,8 +77,7 @@ class Listlevs:
                 while i.rect.x < 970:
                     for j in self.menu_but_sprites:
                         j.rect.x += 10
-                    scr.fill((0, 0, 0))
-                    self.menu_but_sprites.draw(scr)
+                    self.render(scr)
                     pygame.display.flip()
                     time.sleep(0.001)
                 return i.name
