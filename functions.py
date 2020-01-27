@@ -75,9 +75,9 @@ def check_hero(x, y, move_right, hero_sprites):
     sprite.rect = sprite.image.get_rect()
     sprite.rect.x = x
     sprite.rect.y = y
-    sp = -10
+    sp = -45
     if move_right:
-        sp = 10
+        sp = 45
     while -100 <= sprite.rect.x <= 1000:
         sprite.rect.x += sp
         if pygame.sprite.spritecollideany(sprite, hero_sprites):
@@ -93,7 +93,7 @@ def check_hero_down(x, y, hero_sprites):
     sprite.rect = sprite.image.get_rect()
     sprite.rect.x = x
     sprite.rect.y = y
-    sp = 10
+    sp = 70
     while sprite.rect.y <= 600:
         sprite.rect.y += sp
         if pygame.sprite.spritecollideany(sprite, hero_sprites):
