@@ -232,21 +232,24 @@ class Npc(Person):
     def __init__(self, x, y, name, *group):
         super().__init__(x, y, "Npces/robot.png", *group)
         self.name = name
+        self.dialog = False
 
     def moving(self, floor_sprites):
-        if self_on_screen(self):
-            if self.oldrunningwasright:
-                if check_block(self.rect.x + 45, self.rect.y + 70, floor_sprites) and\
-                        not(check_block(self.rect.x + 45, self.rect.y + 20, floor_sprites)):
-                    self.rect.x += 1
+        if not self.dialog:
+            if self_on_screen(self):
+                if self.oldrunningwasright:
+                    if check_block(self.rect.x + 45, self.rect.y + 70, floor_sprites) and\
+                            not(check_block(self.rect.x + 45, self.rect.y + 20, floor_sprites)):
+                        self.rect.x += 1
+                    else:
+                        self.oldrunningwasright = False
                 else:
-                    self.oldrunningwasright = False
-            else:
-                if check_block(self.rect.x - 10, self.rect.y + 70, floor_sprites) and\
-                        not (check_block(self.rect.x - 10, self.rect.y + 20, floor_sprites)):
-                    self.rect.x -= 1
-                else:
-                    self.oldrunningwasright = True
+                    if check_block(self.rect.x - 10, self.rect.y + 70, floor_sprites) and\
+                            not (check_block(self.rect.x - 10, self.rect.y + 20, floor_sprites)):
+                        self.rect.x -= 1
+                    else:
+                        self.oldrunningwasright = True
+        self.dialog = False
 
 
 class Hero(Person):
