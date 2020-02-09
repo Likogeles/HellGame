@@ -8,9 +8,12 @@ from functions import load_image, terminate, check_location, new_game_save
 # но тогда у музыки будут артефакты
 # не забудь исправить этот косяк!
 
+pygame.init()
 pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.mixer.init()
-pygame.init()
+# pygame.mixer.quit()
+# pygame.mixer.pre_init(44100, -16, 1, 512)
+# pygame.mixer.init()
 
 
 pygame.display.set_caption("Hell Game")
@@ -54,9 +57,9 @@ while True:
     if scenename == "quit":
         terminate()
     elif scenename == "menu_":
-        pygame.mixer.music.set_volume(0.1)
         Scene = Menu()
         scenename= "menu"
+        pygame.mixer.music.set_volume(0.1)
     elif scenename == "listlevs_":
         Scene = Listlevs()
         scenename= "listlevs"
@@ -77,13 +80,13 @@ while True:
             scenename = "level3"
             pygame.mixer.music.set_volume(0.4)
     elif scenename == "level_1":
-        pygame.mixer.music.set_volume(0.1)
         Scene = Level1("Level_1.txt")
         scenename = "level1"
-    elif scenename == "level_2":
         pygame.mixer.music.set_volume(0.1)
+    elif scenename == "level_2":
         Scene = Level2("Level_2.txt")
         scenename = "level2"
+        pygame.mixer.music.set_volume(0.1)
     elif scenename == "level_3":
         Scene = Level3("Level_3.txt")
         scenename = "level3"
