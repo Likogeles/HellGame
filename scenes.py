@@ -8,7 +8,7 @@ from classes import Floor, Endlevel, Box
 from classes import Bullet, SinusBullet, DownHeroBullet
 from classes import Hero, Npc, BaseEnemy, UpEnemy
 from functions import load_image, saving_location, check_continue, check_plot
-from dialogues import dialog_with_AGT, dialog_with_ILD
+from dialogues import dialog_with_AGT, dialog_with_ILD, dialog_with_PLN
 
 
 class Menu:
@@ -220,7 +220,7 @@ class Level:
             if x:
                 if type(x) == Bullet or type(x) == SinusBullet or type(x) == DownHeroBullet:
                     self.bullet_sprites.add(x)
-                elif x == "level_1" or x == "level_2" or x == "menu_":
+                elif x == "level_1" or x == "level_2" or x == "level_3" or x == "menu_":
                     return x
                 elif x[:12] == "dialogwindow":
                     self.hero.stop_all_move()
@@ -230,6 +230,8 @@ class Level:
                         y = dialog_with_AGT(self, screen, x)
                     elif x[12:] == "ИЛД1v108":
                         y = dialog_with_ILD(self, screen, x)
+                    elif x[12:] == "ПЛН0v105":
+                        y = dialog_with_PLN(self, screen, x)
                     if y:
                         return y
 
@@ -264,14 +266,14 @@ class Level1(Level):
         for i in range(len(level)):
             for j in range(len(level[0])):
                 if level[i][j] == "=":
-                    self.all_sprites.add(Floor(50 * j, 50 * i, "Hub/floor_" + str(random.randint(0, 5)) + ".png", self.floor_sprites))
+                    self.all_sprites.add(Floor(50 * j, 50 * i, "Hub/floor_" + str(random.randint(0, 11)) + ".png", self.floor_sprites))
                 elif level[i][j] == "N":
                     if num_of_npc == 0:
                         if check_plot() >= 1:
                             self.all_sprites.add(Npc(50 * j, 50 * i - 20, "ИЛД1v108", self.npc_sprites))
                     elif num_of_npc == 1:
-                        if check_plot() >= 2:
-                            self.all_sprites.add(Npc(50 * j, 50 * i - 20, "РСЛ1v410", self.npc_sprites))
+                        if check_plot() >= 3:
+                            self.all_sprites.add(Npc(50 * j, 50 * i - 20, "ПЛН0v105", self.npc_sprites))
                     elif num_of_npc == 2:
                         self.all_sprites.add(Npc(50 * j, 50 * i - 20, "АГТ2v512", self.npc_sprites))
                     num_of_npc += 1
@@ -307,5 +309,27 @@ class Level2(Level):
                 elif level[i][j] == "N":
                     if check_plot() == 0:
                         self.all_sprites.add(Npc(50 * j, 50 * i - 20, "ИЛД1v108", self.npc_sprites))
+                elif level[i][j] == "+":
+                    Endlevel(50 * j, 50 * i - 50, "level_1", "level1.png", self.all_sprites)
+
+
+class Level3(Level):
+    def __init__(self, level_text):
+        super().__init__(level_text)
+        saving_location(3)
+
+        filename = "data/LevelsLists/" + level_text
+        with open(filename, 'r') as mapFile:
+            level_map = [line.strip() for line in mapFile]
+        max_width = max(map(len, level_map))
+        level = list(map(lambda x: x.ljust(max_width, '.'), level_map))
+
+        for i in range(len(level)):
+            for j in range(len(level[0])):
+                if level[i][j] == "=":
+                    self.all_sprites.add(Floor(50 * j, 50 * i, "floor.png", self.floor_sprites))
+                elif level[i][j] == "N":
+                    if check_plot() == 2:
+                        self.all_sprites.add(Npc(50 * j, 50 * i - 20, "ПЛН0v105", self.npc_sprites))
                 elif level[i][j] == "+":
                     Endlevel(50 * j, 50 * i - 50, "level_1", "level1.png", self.all_sprites)
