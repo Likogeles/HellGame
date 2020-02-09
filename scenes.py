@@ -6,7 +6,7 @@ import random
 from classes import HealthPoint, BulletSliderSprite, Button, HeroBut, Dialog_window
 from classes import Floor, Endlevel, Box
 from classes import Bullet, SinusBullet, DownHeroBullet
-from classes import Hero, Npc, BaseEnemy, UpEnemy
+from classes import Hero, Npc, GoodEnemy, BaseEnemy, UpEnemy
 from functions import load_image, saving_location, check_continue, check_plot
 from dialogues import dialog_with_AGT, dialog_with_ILD, dialog_with_PLN
 
@@ -267,6 +267,8 @@ class Level1(Level):
             for j in range(len(level[0])):
                 if level[i][j] == "=":
                     self.all_sprites.add(Floor(50 * j, 50 * i, "Hub/floor_" + str(random.randint(0, 11)) + ".png", self.floor_sprites))
+                elif level[i][j] == "-":
+                    self.all_sprites.add(GoodEnemy(50 * j, 50 * i - 40, self.enemy_sprites))
                 elif level[i][j] == "N":
                     if num_of_npc == 0:
                         if check_plot() >= 1:
@@ -276,6 +278,9 @@ class Level1(Level):
                             self.all_sprites.add(Npc(50 * j, 50 * i - 20, "ПЛН0v105", self.npc_sprites))
                     elif num_of_npc == 2:
                         self.all_sprites.add(Npc(50 * j, 50 * i - 20, "АГТ2v512", self.npc_sprites))
+                    elif num_of_npc == 3:
+                        if check_plot() >= 5:
+                            self.all_sprites.add(Npc(50 * j, 50 * i - 20, "РСЛ1v409", self.npc_sprites))
                     num_of_npc += 1
                 elif level[i][j] == "+":
                     if num_of_level == 0:

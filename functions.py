@@ -75,10 +75,10 @@ def check_hero(x, y, move_right, hero_sprites):
     if move_right:
         sp = 45
     while -100 <= sprite.rect.x <= 1000:
-        sprite.rect.x += sp
         if pygame.sprite.spritecollideany(sprite, hero_sprites):
             sprite.kill()
             return True
+        sprite.rect.x += sp
     sprite.kill()
     return False
 
@@ -91,10 +91,10 @@ def check_hero_down(x, y, hero_sprites):
     sprite.rect.y = y
     sp = 70
     while sprite.rect.y <= 600:
-        sprite.rect.y += sp
         if pygame.sprite.spritecollideany(sprite, hero_sprites):
             sprite.kill()
             return True
+        sprite.rect.y += sp
     sprite.kill()
     return False
 

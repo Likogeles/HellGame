@@ -64,7 +64,7 @@ while True:
             Scene = Level2("Level_2.txt")
             scenename = "level2"
         elif check_location() == 3:
-            Scene = Level2("Level_3.txt")
+            Scene = Level3("Level_3.txt")
             scenename = "level3"
     elif scenename == "level_1":
         Scene = Level1("Level_1.txt")

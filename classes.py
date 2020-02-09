@@ -478,6 +478,46 @@ class Hero(Person):
             self.shooting_log = False
 
 
+class GoodEnemy(Person):
+    def __init__(self, x, y, *group):
+        super().__init__(x, y, "Enemys/Enemy_base.png", *group)
+        self.t = 0
+        self.running_right = []
+        for i in range(8):
+            self.running_right.append(pygame.transform.scale(load_image("GoodEnemy/Enemy_base_" + str(i) + ".png", -1), (50, 90)))
+        self.running_left = []
+        for i in range(8):
+            x = pygame.transform.scale(load_image("GoodEnemy/Enemy_base_" + str(i) + ".png", -1), (50, 90))
+            self.running_left.append(pygame.transform.flip(x, True, False))
+
+    def animate(self):
+        if self.oldrunningwasright:
+            self.image = self.running_right[self.t]
+            self.t += 1
+            if self.t > 7:
+                self.t = 0
+        else:
+            self.image = self.running_left[self.t]
+            self.t += 1
+            if self.t > 7:
+                self.t = 0
+
+    def moving(self, floor_sprites, hero_sprites):
+        if self_on_screen(self):
+            if self.oldrunningwasright:
+                if check_block(self.rect.x + 45, self.rect.y + 100, floor_sprites) and\
+                        not(check_block(self.rect.x + 45, self.rect.y + 50, floor_sprites)):
+                    self.rect.x += 1
+                else:
+                    self.oldrunningwasright = False
+            else:
+                if check_block(self.rect.x - 10, self.rect.y + 100, floor_sprites) and\
+                        not (check_block(self.rect.x - 10, self.rect.y + 50, floor_sprites)):
+                    self.rect.x -= 1
+                else:
+                    self.oldrunningwasright = True
+
+
 class BaseEnemy(Person):
     def __init__(self, x, y, *group):
         super().__init__(x, y, "Enemys/Enemy_base.png", *group)
@@ -552,7 +592,7 @@ class UpEnemy(Person):
 
     def moving(self, floor_sprites, hero_sprites):
         if self_on_screen(self):
-            if check_hero_down(self.rect.x + 25, self.rect.y + 70, hero_sprites):
+            if check_hero_down(self.rect.x + 25, self.rect.y + 30, hero_sprites):
                 if self.bullet_spawn > 50:
                     self.bullet_spawn = 0
                     self.herowas = True
