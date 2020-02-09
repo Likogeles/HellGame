@@ -26,8 +26,8 @@ class Menu:
         theme = pygame.sprite.Sprite()
         theme.image = load_image("maintheme.png")
         theme.rect = theme.image.get_rect()
-        theme.rect.x = 186
-        theme.rect.y = 20
+        theme.rect.x = 240
+        theme.rect.y = 100
         self.all_sprites.add(theme)
 
         pygame.mouse.set_visible(True)
