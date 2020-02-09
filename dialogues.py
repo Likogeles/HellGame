@@ -20,7 +20,7 @@ def dialog_with_AGT(self, screen, x):
         screen.blit(self.dialog_font.render("Чем дольше работа в шахте стоит, тем дольше страна", 1, (0, 0, 0)), (110, 430))
         screen.blit(self.dialog_font.render("остаётся без поставок медной руды. Сначала вам", 1, (0, 0, 0)), (110, 455))
         screen.blit(self.dialog_font.render("необходимо освободить моих коллег из плена этого существа.", 1, (0, 0, 0)), (110, 480))
-        screen.blit(self.dialog_font.render("Первый - ИЛД1v108. Он прячется в Офиссе на третьем уровне.", 1, (0, 0, 0)), (110, 505))
+        screen.blit(self.dialog_font.render("Первый - ИЛД1v108. Он прячется в MathHell на третьем уровне.", 1, (0, 0, 0)), (110, 505))
         pygame.display.flip()
         click_wait()
 

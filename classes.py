@@ -539,8 +539,13 @@ class BaseEnemy(Person):
 
 class UpEnemy(Person):
     def __init__(self, x, y, *group):
-        super().__init__(x, y, "Enemys/Enemy_up.png", *group)
+        super().__init__(x, y, "Enemys/Enemy_up_0.png", *group)
         self.bullet_spawn = 1000
+        self.herowas = False
+        self.t = 0
+        self.animations = []
+        for i in range(4):
+            self.animations.append(load_image("Enemys/Enemy_up_" + str(i) + ".png", -1))
 
     def animate(self):
         pass
@@ -550,9 +555,17 @@ class UpEnemy(Person):
             if check_hero_down(self.rect.x + 25, self.rect.y + 70, hero_sprites):
                 if self.bullet_spawn > 50:
                     self.bullet_spawn = 0
-                    return DownBullet(self.rect.x + 5, self.rect.y + 60, 5)
+                    self.herowas = True
                 else:
                     self.bullet_spawn += 1
             else:
                 self.bullet_spawn = 50
+            if self.herowas:
+                self.image = self.animations[self.t // 5]
+                self.t += 1
+                if self.t >= 20:
+                    self.t = 0
+                    self.image = self.animations[self.t // 5]
+                    self.herowas = False
+                    return DownBullet(self.rect.x + 5, self.rect.y + 30, 5)
             return None

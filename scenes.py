@@ -1,5 +1,6 @@
 import pygame
 import time
+import random
 
 
 from classes import HealthPoint, BulletSliderSprite, Button, HeroBut, Dialog_window
@@ -136,7 +137,7 @@ class Level:
                 elif level[i][j] == "#":
                     self.all_sprites.add(BaseEnemy(50 * j, 50 * i - 40, self.enemy_sprites))
                 elif level[i][j] == "&":
-                    self.all_sprites.add(UpEnemy(50 * j, 50 * i - 20, self.enemy_sprites))
+                    self.all_sprites.add(UpEnemy(50 * j, 50 * i, self.enemy_sprites))
 
     def render(self, screen):
         screen.fill((0, 0, 0))
@@ -263,7 +264,7 @@ class Level1(Level):
         for i in range(len(level)):
             for j in range(len(level[0])):
                 if level[i][j] == "=":
-                    self.all_sprites.add(Floor(50 * j, 50 * i, "floor.png", self.floor_sprites))
+                    self.all_sprites.add(Floor(50 * j, 50 * i, "Hub/floor_" + str(random.randint(0, 5)) + ".png", self.floor_sprites))
                 elif level[i][j] == "N":
                     if num_of_npc == 0:
                         if check_plot() >= 1:
@@ -302,7 +303,7 @@ class Level2(Level):
         for i in range(len(level)):
             for j in range(len(level[0])):
                 if level[i][j] == "=":
-                    self.all_sprites.add(Floor(50 * j, 50 * i, "floor.png", self.floor_sprites))
+                    self.all_sprites.add(Floor(50 * j, 50 * i, "MathHell/floor_" + str(random.randint(0, 18)) + ".png", self.floor_sprites))
                 elif level[i][j] == "N":
                     if check_plot() == 0:
                         self.all_sprites.add(Npc(50 * j, 50 * i - 20, "ИЛД1v108", self.npc_sprites))
