@@ -407,8 +407,8 @@ class Hero(Person):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
                     x = check_npc(self.rect.x, self.rect.y, npc_sprites)
-                    if check_npc(self.rect.x, self.rect.y, npc_sprites):
-                        return "dialogwindow" + x[2]
+                    if x:
+                        return "dialogwindow" + x.name
                 elif event.key == pygame.K_d or event.key == pygame.K_a or event.key == pygame.K_SPACE:
                     self.beginmove(event, floor_sprites)
                 elif event.key == pygame.K_j:

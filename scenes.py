@@ -145,13 +145,11 @@ class Level:
 
         x = self.hero.hero_check_npc(self.npc_sprites)
         if x:
-            HeroBut(x[0], x[1], self.herobut_sprites)
+            x.dialog = True
+            screen.blit(self.font.render(x.name, 1, (255, 255, 255)), (x.rect.x - 25, x.rect.y - 41))
+            HeroBut(x.rect.x + 15, x.rect.y - 20, self.herobut_sprites)
         self.herobut_sprites.draw(screen)
         self.herobut_sprites = pygame.sprite.Group()
-
-        x = self.hero.hero_check_npc(self.npc_sprites)
-        if x:
-            screen.blit(self.font.render(x[2], 1, (255, 255, 255)), (x[0] - 40, x[1] - 21))
 
         self.bullet_sprites.draw(screen)
 

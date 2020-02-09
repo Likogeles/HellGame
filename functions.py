@@ -55,18 +55,14 @@ def check_npc(x, y, npces_sprites):
     sprite.image = load_image("Enemys/check_block.png")
     sprite.rect = sprite.image.get_rect()
     sprite.rect.y = y + 35
-    sprite.rect.x = x - 15
+    sprite.rect.x = x - 5
     x = pygame.sprite.spritecollideany(sprite, npces_sprites)
     if x:
-        return x.rect.x + 15, x.rect.y - 20, x.name
-    sprite.rect.x += 50
+        return x
+    sprite.rect.x += 55
     x = pygame.sprite.spritecollideany(sprite, npces_sprites)
     if x:
-        return x.rect.x + 15, x.rect.y - 20, x.name
-    sprite.rect.x += 40
-    x = pygame.sprite.spritecollideany(sprite, npces_sprites)
-    if x:
-        return x.rect.x + 15, x.rect.y - 20, x.name
+        return x
 
 
 def check_hero(x, y, move_right, hero_sprites):
