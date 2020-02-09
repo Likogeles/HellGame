@@ -5,6 +5,7 @@ from functions import load_image, terminate, check_location, new_game_save
 
 
 pygame.init()
+pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.mixer.init()
 pygame.display.set_caption("Hell Game")
 screen = pygame.display.set_mode((972, 600))
@@ -47,6 +48,7 @@ while True:
     if scenename == "quit":
         terminate()
     elif scenename == "menu_":
+        pygame.mixer.music.set_volume(0.1)
         Scene = Menu()
         scenename= "menu"
     elif scenename == "listlevs_":
@@ -57,6 +59,7 @@ while True:
         Scene = Level1("Level_1.txt")
         scenename = "level1"
     elif scenename == "continue":
+        pygame.mixer.music.set_volume(0.1)
         if check_location() == 1:
             Scene = Level1("Level_1.txt")
             scenename = "level1"
@@ -66,15 +69,19 @@ while True:
         elif check_location() == 3:
             Scene = Level3("Level_3.txt")
             scenename = "level3"
+            pygame.mixer.music.set_volume(0.4)
     elif scenename == "level_1":
+        pygame.mixer.music.set_volume(0.1)
         Scene = Level1("Level_1.txt")
         scenename = "level1"
     elif scenename == "level_2":
+        pygame.mixer.music.set_volume(0.1)
         Scene = Level2("Level_2.txt")
         scenename = "level2"
     elif scenename == "level_3":
         Scene = Level3("Level_3.txt")
         scenename = "level3"
+        pygame.mixer.music.set_volume(0.2)
     # Сюда нужно подставлять остальные сцены по мере их готовности
 
     for event in pygame.event.get():

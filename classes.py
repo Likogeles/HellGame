@@ -266,6 +266,9 @@ class Hero(Person):
         self.min_point_level = [0, 0]
         self.max_point_level = [50, 50]
 
+        self.sinusbullet_shoot_sound = pygame.mixer.Sound("data/Sounds/sinus_bullet.ogg")
+        self.sinusbullet_shoot_sound.set_volume(0.1)
+
         self.t = 0
         self.standing_right = []
         for i in range(8):
@@ -420,6 +423,8 @@ class Hero(Person):
                         else:
                             x -= 25
                         new_bullet = Bullet(x, self.rect.y + 10, self.oldrunningwasright, 10)
+                    elif self.weapons_slide == 1:
+                        self.sinusbullet_shoot_sound.play(-1)
                     elif self.weapons_slide == 2:
                         if self.oldrunningwasright:
                             x += 50
@@ -470,6 +475,7 @@ class Hero(Person):
         elif event.key == pygame.K_a:
             self.left_move = False
         elif event.key == pygame.K_j:
+            self.sinusbullet_shoot_sound.stop()
             self.shooting_log = False
 
     def stop_all_move(self):

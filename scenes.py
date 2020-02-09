@@ -2,10 +2,9 @@ import pygame
 import time
 import random
 
-
 from classes import HealthPoint, BulletSliderSprite, Button, HeroBut, Dialog_window
 from classes import Floor, Endlevel, Box
-from classes import Bullet, SinusBullet, DownHeroBullet
+from classes import Bullet, SinusBullet, DownHeroBullet, DownBullet
 from classes import Hero, Npc, GoodEnemy, BaseEnemy, UpEnemy
 from functions import load_image, saving_location, check_continue, check_plot
 from dialogues import dialog_with_AGT, dialog_with_ILD, dialog_with_PLN
@@ -120,6 +119,10 @@ class Level:
         self.bullet_1_slider = pygame.sprite.Group(BulletSliderSprite("bull_1_slider.png"))
         self.bullet_2_slider = pygame.sprite.Group(BulletSliderSprite("bull_2_slider.png"))
 
+        self.bullet_shoot_sound = pygame.mixer.Sound("data/Sounds/bullet.ogg")
+        self.bullet_shoot_sound.set_volume(0.15)
+        self.down_bullet_shoot_sound = pygame.mixer.Sound("data/Sounds/down_bullet.ogg")
+
         filename = "data/LevelsLists/" + level_text
         with open(filename, 'r') as mapFile:
             level_map = [line.strip() for line in mapFile]
@@ -188,6 +191,10 @@ class Level:
             for i in self.enemy_sprites:
                 new_bullet = i.moving(self.floor_sprites, self.hero_sprites)
                 if new_bullet:
+                    if type(new_bullet) == Bullet:
+                        self.bullet_shoot_sound.play()
+                    elif type(new_bullet) == DownBullet:
+                        self.down_bullet_shoot_sound.play()
                     self.bullet_sprites.add(new_bullet)
                     self.all_sprites.add(new_bullet)
             for i in self.npc_sprites:
@@ -220,6 +227,10 @@ class Level:
             if x:
                 if type(x) == Bullet or type(x) == SinusBullet or type(x) == DownHeroBullet:
                     self.bullet_sprites.add(x)
+                    if type(x) == Bullet:
+                        self.bullet_shoot_sound.play()
+                    elif type(x) == DownHeroBullet:
+                        self.down_bullet_shoot_sound.play()
                 elif x == "level_1" or x == "level_2" or x == "level_3" or x == "menu_":
                     return x
                 elif x[:12] == "dialogwindow":
@@ -322,6 +333,8 @@ class Level3(Level):
     def __init__(self, level_text):
         super().__init__(level_text)
         saving_location(3)
+        pygame.mixer.music.load("data/Music/level3.mp3")
+        pygame.mixer.music.play(-1)
 
         filename = "data/LevelsLists/" + level_text
         with open(filename, 'r') as mapFile:
