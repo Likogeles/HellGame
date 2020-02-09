@@ -22,10 +22,13 @@ class Button(pygame.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.name = name
+        self.click_sound = pygame.mixer.Sound("data/Sounds/odd.wav")
+        self.click_sound.set_volume(0.4)
 
     def click(self, pos):
         if self.rect.x <= pos[0] <= self.rect.x + self.w and \
                 self.rect.y <= pos[1] <= self.rect.y + self.h:
+            self.click_sound.play()
             return True
         return False
 
