@@ -4,9 +4,15 @@ from scenes import Menu, Listlevs, Level1, Level2, Level3
 from functions import load_image, terminate, check_location, new_game_save
 
 
+# поставь pygame.init() после pygame.mixer.init() чтобы небыло задержки звука выстрелов
+# но тогда у музыки будут артефакты
+# не забудь исправить этот косяк!
+
 pygame.init()
 pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.mixer.init()
+
+
 pygame.display.set_caption("Hell Game")
 screen = pygame.display.set_mode((972, 600))
 
