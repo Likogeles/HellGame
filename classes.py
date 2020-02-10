@@ -532,6 +532,7 @@ class BaseEnemy(Person):
         super().__init__(x, y, "Enemys/Enemy_base.png", *group)
         self.bullet_spawn = 1000
         self.t = 0
+        self.life = True
         self.running_right = []
         for i in range(8):
             self.running_right.append(
@@ -540,21 +541,50 @@ class BaseEnemy(Person):
         for i in range(8):
             x = pygame.transform.scale(load_image("Enemys/Enemy_base_" + str(i) + ".png", -1), (50, 90))
             self.running_left.append(pygame.transform.flip(x, True, False))
+        self.Exp_right = []
+        for i in range(6):
+            self.Exp_right.append(
+                pygame.transform.scale(load_image("Enemys/Enemy_Exp_base_" + str(i) + ".png", -1), (50, 90)))
+        self.Exp_left = []
+        for i in range(6):
+            x = pygame.transform.scale(load_image("Enemys/Enemy_Exp_base_" + str(i) + ".png", -1), (50, 90))
+            self.Exp_left.append(pygame.transform.flip(x, True, False))
 
     def animate(self):
-        if self.oldrunningwasright:
-            self.image = self.running_right[self.t]
-            self.t += 1
-            if self.t > 7:
-                self.t = 0
+        if self.life:
+            if self.oldrunningwasright:
+                self.image = self.running_right[self.t]
+                self.t += 1
+                if self.t > 7:
+                    self.t = 0
+            else:
+                self.image = self.running_left[self.t]
+                self.t += 1
+                if self.t > 7:
+                    self.t = 0
         else:
-            self.image = self.running_left[self.t]
-            self.t += 1
-            if self.t > 7:
+            if self.oldrunningwasright:
+                if self.t > 5:
+                    self.kill()
+                else:
+                    self.image = self.Exp_right[self.t]
+                    self.t += 1
+            else:
+                if self.t > 5:
+                    self.kill()
+                else:
+                    self.image = self.Exp_left[self.t]
+                    self.t += 1
+
+    def get_hit(self, damage):
+        self.hp -= damage
+        if self.hp <= 0:
+            if self.life:
                 self.t = 0
+            self.life = False
 
     def moving(self, floor_sprites, hero_sprites):
-        if self_on_screen(self):
+        if self_on_screen(self) and self.life:
             if self.oldrunningwasright:
                 if check_hero(self.rect.x + 50, self.rect.y + 10, True, hero_sprites):
                     if self.bullet_spawn > 50:

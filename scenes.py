@@ -345,7 +345,7 @@ class Level3(Level):
         for i in range(len(level)):
             for j in range(len(level[0])):
                 if level[i][j] == "=":
-                    self.all_sprites.add(Floor(50 * j, 50 * i, "floor.png", self.floor_sprites))
+                    self.all_sprites.add(Floor(50 * j, 50 * i, "MedHell/floor_" + str(random.randint(0, 7)) + ".png", self.floor_sprites))
                 elif level[i][j] == "N":
                     if check_plot() == 2:
                         self.all_sprites.add(Npc(50 * j, 50 * i - 20, "ПЛН0v105", self.npc_sprites))

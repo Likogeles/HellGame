@@ -8,12 +8,9 @@ from functions import load_image, terminate, check_location, new_game_save
 # но тогда у музыки будут артефакты
 # не забудь исправить этот косяк!
 
-pygame.init()
 pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.mixer.init()
-# pygame.mixer.quit()
-# pygame.mixer.pre_init(44100, -16, 1, 512)
-# pygame.mixer.init()
+pygame.init()
 
 
 pygame.display.set_caption("Hell Game")
